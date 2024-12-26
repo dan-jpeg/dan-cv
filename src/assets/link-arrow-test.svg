@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 506.43 436.9">
+  <defs>
+    <style>
+      .cls-1 {
+        font-family: NHaasGroteskDSPro-45Lt, 'Neue Haas Grotesk Display Pro';
+        font-size: 407.74px;
+      }
+
+      .cls-2 {
+        fill: none;
+        stroke: #000;
+        stroke-miterlimit: 10;
+        stroke-width: 20px;
+      }
+    </style>
+  </defs>
+  <g id="Layer_1-2" data-name="Layer 1">
+    <path class="cls-2" d="M137.14,330.63l219.74-204.02c.05-.05.02-.13-.05-.14l-195.36-11.4"/>
+    <line class="cls-2" x1="357.01" y1="126.48" x2="354.19" y2="318.13"/>
+    <text class="cls-1" transform="translate(0 349.64)"><tspan x="0" y="0">[</tspan></text>
+    <text class="cls-1" transform="translate(389 349.64)"><tspan x="0" y="0">]</tspan></text>
+  </g>
+</svg>

@@ -38,7 +38,7 @@ const SkillRow = ({ title, filledCount, index }) => {
 
 const SkillsTab = () => {
     const skills = [
-        { title: 'ADOBE', filledCount: 2 },
+        { title: 'ADOBE', filledCount: 3 },
         { title: 'FIGMA', filledCount: 3 },
         { title: 'CODE (JS / WEB)', filledCount: 3 },
         { title: 'CODE (NATIVE / OTHER)', filledCount: 2 },

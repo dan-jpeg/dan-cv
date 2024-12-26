@@ -1,7 +1,7 @@
 
 const WorksEntry = () => {
     return (
-        <div className={`w-full mb-6 max-w-[550px] h-screen  `}>
+        <div className={`w-full mb-0 max-w-[550px] h-screen  `}>
 
                 <video
                     className=" w-full h-full object-contain"

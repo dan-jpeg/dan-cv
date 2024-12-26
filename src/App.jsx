@@ -1,24 +1,102 @@
 import { useState, useRef } from 'react';
 import arrow from '/src/assets/arrow_14.svg';
-import { motion, AnimatePresence } from 'framer-motion';
+import linkArrow from '/src/assets/link-arrow-test.svg';
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
 import SkillsTab from "./SkillsTab2.jsx";
 import { colorSchemes } from './colorSchemes';
 import WorksEntry from "./WorksEntry.jsx";
+import navArrow from '/src/assets/nav-arrow.svg'
+
 
 const Header = () => {
     return (
-        <div className={`flex justify-between w-screen font-bold px-6 fixed top-4 font-['Neue Haas Grotesk Display Pro'] text-[18px]`}>
+        <div className={`flex justify-between w-screen font-bold px-6 fixed top-4 font-['Neue Haas Grotesk Display Pro'] text-[18px] md:text-[24px]`}>
         <span className="text  "> DANIEL CROWLEY</span>
         <span className="text "> CV</span>
         </div>
     )
 }
 
+const WorkInfoTitle = ({ scrollPosition, isVisible }) => {
+    const [isHovered, setIsHovered] = useState(false);  // Add hover state
+    const title = "OFFICE OF JING YI XU"
+
+    return (
+        <AnimatePresence>
+            {isVisible && (
+                <div className="fixed left-1/2 z-20 transform -translate-x-1/2 bottom-6">
+                    <motion.div
+                        initial={{opacity: 1, y: 60}}
+                        animate={{opacity: 1, y: 0}}
+                        exit={{opacity: 0, y: 45}}
+                        transition={{delay: 0.2, ease: "linear", duration: 0.142}}
+                        className="font-['Neue Haas Grotesk Display Pro'] font-bold text-[18px] flex flex-row md:text-[24px] text-center items-center"
+                    >
+                        <span>{title} </span>
+                        <motion.div
+                            className="ml-4 px-2 cursor-pointer"
+                            animate={{ opacity: isHovered ? 0.7 : 0.3 }}
+                            whileHover={{ opacity: 0.7 }}
+                            onHoverStart={() => setIsHovered(true)}
+                            onHoverEnd={() => setIsHovered(false)}
+                        >
+                            <img
+                                className="w-8 h-8 m-0 p-0"
+                                src={linkArrow}
+                                alt="link arrow"
+                            />
+                        </motion.div>
+
+                    </motion.div>
+                </div>
+            )}
+        </AnimatePresence>
+    );
+}
 function App() {
     const [isFlashing, setIsFlashing] = useState(false);
     const [workOpen, setWorkOpen] = useState(false);
     const [skillsOpen, setSkillsOpen] = useState(false);
     const [colorScheme, setColorScheme] = useState('default');
+    const [scrollPosition, setScrollPosition] = useState(0);
+    const { scrollY } = useScroll();
+    const [isTransitioning, setIsTransitioning] = useState(false);
+    const [currentWorkIndex, setCurrentWorkIndex] = useState(0);
+    const [direction, setDirection] = useState('right');
+
+    const works = [
+        { id: 1, videoUrl: 'placeholder.com', title: "OFFICE OF JING YI XU" },
+        { id: 1, videoUrl: 'placeholder.com', title: "OFFICE OF JING YI XU" },
+        { id: 2 },
+        { id: 2 },
+        { id: 2 },
+        // Add more works as needed
+    ];
+
+// Add function to handle navigation
+    const handleWorkNav = () => {
+        if (currentWorkIndex === 0) {
+            setDirection('right'); // Going from 1st to 2nd
+            setCurrentWorkIndex(1);
+        } else {
+            setDirection('left'); // Going from 2nd to 1st
+            setCurrentWorkIndex(0);
+        }
+    };
+
+    const shouldShowWorkInfo = workOpen && scrollPosition > window.innerHeight / 2;
+
+    useMotionValueEvent(scrollY, "change", (latest) => {
+        setScrollPosition(latest);
+
+        if (!isTransitioning && latest < 50) {
+            if (workOpen) handleWorkClose();
+            if (skillsOpen) handleSkillsClose();
+        }
+    });
+
+
+
 
     const workSectionRef = useRef(null);
 
@@ -26,12 +104,9 @@ function App() {
 
 
     const handleWorkClick = async () => {
+        setDirection('');
+        setIsTransitioning(true);
         setWorkOpen(true);
-
-        // Start color transition
-
-
-        // Wait for state update and DOM render
         await new Promise(resolve => setTimeout(resolve, 10));
 
         const element = workSectionRef.current;
@@ -45,8 +120,10 @@ function App() {
             setColorScheme('studio');
             await new Promise(resolve => setTimeout(resolve, 220));
             setColorScheme('default');
+            setIsTransitioning(false);
         }
     }
+
 
     const handleWorkClose = async () => {
         // Start transition back to default colors
@@ -57,14 +134,14 @@ function App() {
             behavior: 'smooth'
         });
 
-        await new Promise(resolve => setTimeout(resolve, 800));
+        await new Promise(resolve => setTimeout(resolve, 250));
         setWorkOpen(false);
     };
 
     const handleSkillsClick = async () => {
+        setIsTransitioning(true);
         setSkillsOpen(true);
 
-        // Wait for state update and DOM render
         await new Promise(resolve => setTimeout(resolve, 10));
 
         const element = skillsSectionRef.current;
@@ -73,21 +150,24 @@ function App() {
                 behavior: 'smooth',
                 block: 'start'
             });
+
+            // Adding a delay before allowing scroll-to-top to work
+            await new Promise(resolve => setTimeout(resolve, 800));
+            setIsTransitioning(false);
         }
     };
 
     const handleSkillsClose = async () => {
-        // First scroll to top
+        setIsTransitioning(true);
+
         window.scrollTo({
             top: 0,
             behavior: 'smooth'
         });
 
-        // Wait for scroll to complete
         await new Promise(resolve => setTimeout(resolve, 800));
-
-        // Then close the skills section
         setSkillsOpen(false);
+        setIsTransitioning(false);
     };
 
 
@@ -98,9 +178,13 @@ function App() {
                 backgroundColor: colorSchemes[colorScheme].background,
                 color: colorSchemes[colorScheme].text,
             }}
-            transition={{duration: 0.8, ease: "easeInOut"}}
+            transition={{duration: 0.8, ease: "linear"}}
         >
             <Header colorScheme={colorScheme}/>
+            <WorkInfoTitle
+                scrollPosition={scrollPosition}
+                isVisible={shouldShowWorkInfo}
+            />
 
             {/* First viewport - About section */}
             <div
@@ -176,6 +260,7 @@ function App() {
             </div>
 
             {/* Work section */}
+            {/* Work section */}
             <AnimatePresence>
                 {workOpen && (
                     <motion.div
@@ -184,25 +269,44 @@ function App() {
                         animate={{opacity: 1, y: 0}}
                         exit={{opacity: 0, y: 20}}
                         transition={{duration: 0.5}}
-                        className="w-full px-6 min-h-screen  flex flex-col  justify-center items-center"
+                        className="w-full px-6 min-h-screen flex flex-col justify-center items-center"
                     >
-                        <div className=" w-full space-y-2 justify-center lg:space-y-0 lg:space-x-4 flex flex-col lg:flex-row">
-                            <WorksEntry />
-                            <WorksEntry />
+                        <div className="w-full space-y-2 justify-center items-center lg:space-y-0 lg:space-x-4 flex flex-col lg:flex-row relative">
+                            <AnimatePresence mode="popLayout">
+                                <motion.div
+                                    key={currentWorkIndex}
+                                    initial={direction === '' ?
+                                        { opacity: 0 } : // Initial load
+                                        {
+                                            opacity: 0,
+                                            x: direction === 'right' ? 1200 : -1200
+                                        }
+                                    }
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{
+                                        opacity: 0,
+                                        x: direction === 'right' ? 1200 : -1200
+                                    }}
+                                    transition={{duration: 0.5, ease: "easeInOut"}}
+                                >
+                                    <WorksEntry workData={works[currentWorkIndex]}/>
+                                </motion.div>
+                            </AnimatePresence>
 
+                            {/* Nav arrow */}
+                            <motion.div
+                                className={`absolute ${currentWorkIndex === 0 ? 'right-[2rem]' : 'left-[2rem]'} top-1/2 transform -translate-y-1/2 cursor-pointer`}
+                                whileHover={{scale: 1.1}}
+                                whileTap={{scale: 0.95}}
+                                onClick={handleWorkNav}
+                            >
+                                <img
+                                    className={`w-12 h-12 m-0 p-0 ${currentWorkIndex === 0 ? '' : 'rotate-180'}`}
+                                    src={navArrow}
+                                    alt="nav arrow"
+                                />
+                            </motion.div>
                         </div>
-
-                        <motion.div
-                            className="text-3xl hover:cursor-n-resize font-bold"
-                            animate={{
-                                color: colorSchemes[colorScheme].text
-                            }}
-                            whileTap={{scale: 0.95}}
-                            onClick={handleWorkClose}
-                        >
-
-                            CLOSE WORK
-                        </motion.div>
                     </motion.div>
                 )}
             </AnimatePresence>
