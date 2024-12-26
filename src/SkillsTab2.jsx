@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const ThreeCircles = ({ filledCount = 0 }) => {
     return (
@@ -7,7 +7,9 @@ const ThreeCircles = ({ filledCount = 0 }) => {
             {[0, 1, 2].map((index) => (
                 <motion.div
                     key={index}
-
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: index * 0.07 }}
                     className={`w-4 h-4 rounded-full border-2 border-black ${
                         index < filledCount ? 'bg-[#353333]' : 'bg-transparent'
                     }`}
@@ -45,16 +47,16 @@ const SkillsTab = () => {
 
     return (
         <motion.div
-            initial={{ height: 0, y: -15,  opacity: 0 }}
-            animate={{ height: "auto", y: 0,  opacity: 1 }}
+            initial={{ height: 0, y: -15, opacity: 0 }}
+            animate={{ height: "auto", y: 0, opacity: 1 }}
             exit={{ height: 0, y: 15, opacity: 0 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="p-6 bg-white overflow-hidden"
         >
-            <div className="flex min-w-[400px] border-2  justify-center items-center rounded-2 border-black px-6 py-10 flex-col gap-4">
+            <div className="flex min-w-[400px] border-2 justify-center items-center rounded-2 border-black px-6 py-10 flex-col gap-4">
                 <button
-
-                    className="py-2.5 rounded-[50px] w-2/3 border-[2.5px] border-black skills-cursor  justify-center items-center gap-2.5 flex text-center text-black text-[30px] font-medium font-['Neue Haas Grotesk Display Pro'] focus:outline-none hover:rounded-3xl hover:bg-opacity-60  hover:text-opacity-15 duration-[60ms] transition-colors">
+                    className="py-2.5 rounded-[50px] w-2/3 border-[2.5px] border-black skills-cursor justify-center items-center gap-2.5 flex text-center text-black text-[30px] font-medium font-['Neue Haas Grotesk Display Pro'] focus:outline-none hover:rounded-3xl hover:bg-opacity-60 hover:text-opacity-15 duration-[60ms] transition-colors"
+                >
                     SKILLS
                 </button>
                 {skills.map((skill, index) => (

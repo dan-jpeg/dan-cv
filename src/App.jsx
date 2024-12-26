@@ -1,8 +1,7 @@
 import { useState, useRef } from 'react';
 import arrow from '/src/assets/arrow_14.svg';
-import { motion } from 'framer-motion';
-import SkillsTab from "./SkillsTab.jsx";
-import SkillsTab2 from "./SkillsTab2.jsx";
+import { motion, AnimatePresence } from 'framer-motion';
+import SkillsTab from "./SkillsTab2.jsx";
 
 const Header = () => {
     return (
@@ -34,21 +33,67 @@ function App() {
         }
     };
 
-    const handleSkillsClick = () => {
-        setSkillsOpen(!skillsOpen)
-    }
+    const skillsSectionRef = useRef(null);
+
+    const handleSkillsClick = async () => {
+        setSkillsOpen(true);
+
+        // Wait for state update and DOM render
+        await new Promise(resolve => setTimeout(resolve, 10));
+
+        const element = skillsSectionRef.current;
+        if (element) {
+            element.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    };
+
+    const handleSkillsClose = async () => {
+        // First scroll to top
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+
+        // Wait for scroll to complete
+        await new Promise(resolve => setTimeout(resolve, 800));
+
+        // Then close the skills section
+        setSkillsOpen(false);
+    };
+
+    const handleWorkClose = async () => {
+        // First scroll to top
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+
+        // Wait for scroll to complete before removing content
+        // A typical smooth scroll takes about 500ms
+        await new Promise(resolve => setTimeout(resolve, 800));
+
+        // Then close the work section
+        setWorkOpen(false);
+    };
+
+
 
     return (
         <div className="w-full overflow-y-auto">
             <Header />
             {/* First viewport - About section */}
-            <div className="w-full min-h-screen bg-custom-blue bg-opacity-0 flex flex-col justify-center items-center font-['Neue Haas Grotesk Display Pro']">
+            <div
+                className="w-full min-h-screen bg-custom-blue bg-opacity-0 flex flex-col justify-center items-center font-['Neue Haas Grotesk Display Pro']">
                 <div className="flex flex-col justify-center items-center gap-[13px]">
-                    <div className="pb-4 text-center text-black text-[36px] md:text-[66px] font-medium">
+                    <div className="pb-4 pt-20 text-center text-black text-[36px] md:text-[66px] font-medium">
                         ABOUT
                     </div>
                     <div className="w-screen pb-4 justify-center items-center gap-2.5 inline-flex">
-                        <div className="text-center text-black text-[18px] md:text-[24px] font-medium font-['Neue Haas Grotesk Display Pro']">
+                        <div
+                            className="text-center text-black text-[18px] md:text-[24px] font-medium font-['Neue Haas Grotesk Display Pro']">
                             I AM A PRODUCT DESIGNER <br/>
                             OBSESSED WITH EXPLORING CULTURE <br/>
                             THROUGH
@@ -68,42 +113,64 @@ function App() {
                         onMouseLeave={() => setIsFlashing(false)}
                         onClick={handleWorkClick}
                     >
-                        <span className={`text-black text-[30px] font-medium font-['Neue Haas Grotesk Display Pro'] ${isFlashing ? 'flashing' : ''} `}>
+                        <span
+                            className={`text-black text-[30px] font-medium font-['Neue Haas Grotesk Display Pro'] ${isFlashing ? 'flashing' : ''} `}>
 
                             SELECTED WORK
                         </span>
                     </button>
 
                     {/* Normal Button */}
+
                     <button
                         onClick={handleSkillsClick}
-                        className="px-[37px] py-2.5 rounded-[50px] border-[2.5px] border-black skills-cursor  justify-center items-center gap-2.5 flex text-center text-black text-[30px] font-medium font-['Neue Haas Grotesk Display Pro'] focus:outline-none hover:rounded-3xl hover:bg-opacity-60  hover:text-opacity-15 duration-[60ms] transition-colors">
+                        className="px-[37px] py-2.5 rounded-[50px] border-[2.5px] border-black skills-cursor justify-center items-center gap-2.5 flex text-center text-black text-[30px] font-medium font-['Neue Haas Grotesk Display Pro'] focus:outline-none hover:rounded-3xl hover:bg-opacity-0 hover:text-opacity-0 duration-[60ms] transition-colors">
                         SKILLS
                     </button>
-                    {skillsOpen && (
-                        <SkillsTab2 />
-                    )}
+
                     <button
                         className="px-[37px] py-2.5 rounded-[50px] border-[2.5px] border-black justify-center items-center gap-2.5 flex text-center text-black text-[30px] font-medium font-['Neue Haas Grotesk Display Pro'] focus:outline-none hover:bg-black hover:text-white transition-colors">
                         CONTACT
                     </button>
                 </div>
+
             </div>
+
 
             {/* Work section with motion */}
             {workOpen && (
                 <motion.div
                     ref={workSectionRef}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.5 }}
+                    initial={{opacity: 0}}
+                    animate={{opacity: 1}}
+                    transition={{duration: 0.5}}
                     className="w-full min-h-screen   flex flex-col justify-center items-center"
                 >
-                    <div className="text-custom-blue font-bold text-3xl " onClick={() => setWorkOpen(false)} >
-                        Work Open
+                    <div className="text-custom-blue font-bold text-3xl hover:cursor-n-resize " onClick={handleWorkClose}>
+                        CLOSE WORK
                     </div>
                 </motion.div>
             )}
+
+            <AnimatePresence>
+                {skillsOpen && (
+                    <motion.div
+                        ref={skillsSectionRef}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.5 }}
+                        className="w-full min-h-screen flex flex-col justify-center items-center"
+                    >
+                        <SkillsTab />
+                        <div
+                            className="text-custom-blue font-bold text-3xl mt-8 hover:cursor-n-resize"
+                            onClick={handleSkillsClose}
+                        >
+                            CLOSE SKILLS
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

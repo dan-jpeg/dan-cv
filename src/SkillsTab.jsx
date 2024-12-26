@@ -1,5 +1,5 @@
 
-const SkillsTab = () => {
+const SkillsTab2 = () => {
     return (
         <div
             className="h-[334px] px-6 py-8 bg-white flex-col justify-start items-start gap-2.5 inline-flex overflow-hidden">
@@ -67,5 +67,5 @@ const SkillsTab = () => {
     )
 }
 
-export default SkillsTab;
+export default SkillsTab2;
 
