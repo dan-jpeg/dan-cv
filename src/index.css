@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: Helvetica, system-ui, Avenir, Inter, Arial, sans-serif;
+  line-height: 1;
+  font-weight: 400;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
+}
+
+
+#root {
+  padding: 0;
+
+}
+
+.skills-cursor {
+  cursor: url('/src/assets/skills_cursor2.png'), auto;
+}
+
+
+
+.skills-cursor * {
+  cursor: inherit; /* Ensure child elements inherit the custom cursor */
+}
+
+
+
+
+
+
+.custom-cursor {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: black;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+}
+
+/* Flash effect animation with opacity */
+@keyframes instant-flash {
+  0%, 100% {
+    opacity: 1; /* Fully visible */
+  }
+  50% {
+    opacity: 0; /* Invisible */
+  }
+}
+
+@layer utilities {
+  .hover-flash-instant:hover {
+    animation: instant-flash 0.34242424s steps(1, end) infinite;
+  }
+}
+
+@layer utilities {
+  .flashing {
+    animation: instant-flash 0.47242424s steps(1, end) infinite;
+  }
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Ensure the container takes the full width and height */
+body {
+  width: 100vw;
+  height: 100vh;
+}
