@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import navArrow from '/src/assets/nav-arrow.svg'
 
 const ThreeCircles = ({ filledCount = 0 }) => {
     return (

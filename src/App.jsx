@@ -219,9 +219,9 @@ function App() {
                     <div className="w-screen pb-4 justify-center items-center gap-2.5 inline-flex">
                         <div
                             className="text-center w-2/3 text-[18px] leading-5 md:leading-7 md:text-[24px] lg:leading-9 lg:text-[32px] space-y-2 font-medium">
-                            DANIEL CROWLEY IS AN NYC-BASED PRODUCT DESIGNER,
+                            DANIEL CROWLEY A PRODUCT DESIGNER WHO LIVES IN NYC.
 
-                            WHO SPECIALIZES IN CRAFTING
+                            HE SPECIALIZES IN CRAFTING
                             <span className={`mx-2 ${isFlashing ? 'flashing' : ''}`}>
                             UNIQUE
                         </span>
