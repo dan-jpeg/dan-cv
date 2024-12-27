@@ -17,8 +17,12 @@ const Header = () => {
     )
 }
 
-const WorkInfoTitle = ({ scrollPosition, isVisible, title }) => {
+const WorkInfoTitle = ({ scrollPosition, isVisible, title, url }) => {
     const [isHovered, setIsHovered] = useState(false);
+
+    const handleLinkClick = () => {
+        window.open(url, '_blank', 'noopener,noreferrer');
+    };
 
     return (
         <AnimatePresence>
@@ -38,6 +42,7 @@ const WorkInfoTitle = ({ scrollPosition, isVisible, title }) => {
                             whileHover={{ opacity: 0.7 }}
                             onHoverStart={() => setIsHovered(true)}
                             onHoverEnd={() => setIsHovered(false)}
+                            onClick={handleLinkClick}
                         >
                             <img
                                 className="w-6 h-6"
@@ -67,12 +72,14 @@ function App() {
         {
             id: 1,
             component: WorksEntry,
-            title: "OFFICE OF JING YI XU"
+            title: "OFFICE OF JING YI XU",
+            url: "https://jxu.netlify.app/"
         },
         {
             id: 2,
             component: WorksEntryEdie,
-            title: "ARTIST PORTFOLIO: EDIE XU"
+            title: "ARTIST PORTFOLIO: EDIE XU",
+            url: "https://statuesque-mochi-dbb890.netlify.app/"
         }
     ];
 
@@ -193,6 +200,7 @@ function App() {
                 scrollPosition={scrollPosition}
                 isVisible={shouldShowWorkInfo}
                 title={works[currentWorkIndex].title}
+                url={works[currentWorkIndex].url}
             />
 
             {/* First viewport - About section */}
