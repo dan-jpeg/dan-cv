@@ -4,7 +4,7 @@ import linkArrow from '/src/assets/link-arrow-test.svg';
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
 import SkillsTab from "./SkillsTab2.jsx";
 import { colorSchemes } from './colorSchemes';
-import WorksEntry from "./WorksEntry.jsx";
+import WorksEntry, { WorksEntryEdie } from "./WorksEntry.jsx";
 import navArrow from '/src/assets/nav-arrow.svg'
 
 
@@ -17,9 +17,8 @@ const Header = () => {
     )
 }
 
-const WorkInfoTitle = ({ scrollPosition, isVisible }) => {
-    const [isHovered, setIsHovered] = useState(false);  // Add hover state
-    const title = "OFFICE OF JING YI XU"
+const WorkInfoTitle = ({ scrollPosition, isVisible, title }) => {
+    const [isHovered, setIsHovered] = useState(false);
 
     return (
         <AnimatePresence>
@@ -30,29 +29,29 @@ const WorkInfoTitle = ({ scrollPosition, isVisible }) => {
                         animate={{opacity: 1, y: 0}}
                         exit={{opacity: 0, y: 45}}
                         transition={{delay: 0.2, ease: "linear", duration: 0.142}}
-                        className="font-['Neue Haas Grotesk Display Pro'] font-bold text-[18px] flex flex-row md:text-[24px] text-center items-center"
+                        className="font-['Neue Haas Grotesk Display Pro'] font-bold text-[18px] md:text-[24px] relative inline-block"
                     >
-                        <span>{title} </span>
+                        {title}
                         <motion.div
-                            className="ml-4 px-2 cursor-pointer"
+                            className="absolute top-1/2 -translate-y-1/2 -right-12 cursor-pointer"
                             animate={{ opacity: isHovered ? 0.7 : 0.3 }}
                             whileHover={{ opacity: 0.7 }}
                             onHoverStart={() => setIsHovered(true)}
                             onHoverEnd={() => setIsHovered(false)}
                         >
                             <img
-                                className="w-8 h-8 m-0 p-0"
+                                className="w-6 h-6"
                                 src={linkArrow}
                                 alt="link arrow"
                             />
                         </motion.div>
-
                     </motion.div>
                 </div>
             )}
         </AnimatePresence>
     );
 }
+
 function App() {
     const [isFlashing, setIsFlashing] = useState(false);
     const [workOpen, setWorkOpen] = useState(false);
@@ -62,15 +61,19 @@ function App() {
     const { scrollY } = useScroll();
     const [isTransitioning, setIsTransitioning] = useState(false);
     const [currentWorkIndex, setCurrentWorkIndex] = useState(0);
-    const [direction, setDirection] = useState('right');
+    const [direction, setDirection] = useState('');
 
     const works = [
-        { id: 1, videoUrl: 'placeholder.com', title: "OFFICE OF JING YI XU" },
-        { id: 1, videoUrl: 'placeholder.com', title: "OFFICE OF JING YI XU" },
-        { id: 2 },
-        { id: 2 },
-        { id: 2 },
-        // Add more works as needed
+        {
+            id: 1,
+            component: WorksEntry,
+            title: "OFFICE OF JING YI XU"
+        },
+        {
+            id: 2,
+            component: WorksEntryEdie,
+            title: "ARTIST PORTFOLIO: EDIE XU"
+        }
     ];
 
 // Add function to handle navigation
@@ -90,7 +93,12 @@ function App() {
         setScrollPosition(latest);
 
         if (!isTransitioning && latest < 50) {
-            if (workOpen) handleWorkClose();
+
+            if (workOpen) {
+                handleWorkClose();
+                setDirection('')
+                setCurrentWorkIndex(0)
+            }
             if (skillsOpen) handleSkillsClose();
         }
     });
@@ -184,6 +192,7 @@ function App() {
             <WorkInfoTitle
                 scrollPosition={scrollPosition}
                 isVisible={shouldShowWorkInfo}
+                title={works[currentWorkIndex].title}
             />
 
             {/* First viewport - About section */}
@@ -200,14 +209,15 @@ function App() {
                         ABOUT
                     </div>
                     <div className="w-screen pb-4 justify-center items-center gap-2.5 inline-flex">
-                        <div className="text-center text-[18px] md:text-[24px] font-medium">
-                            I AM A PRODUCT DESIGNER <br/>
-                            OBSESSED WITH EXPLORING CULTURE <br/>
-                            THROUGH
+                        <div
+                            className="text-center w-2/3 text-[18px] leading-5 md:leading-7 md:text-[24px] lg:leading-9 lg:text-[32px] space-y-2 font-medium">
+                            DANIEL CROWLEY IS AN NYC-BASED PRODUCT DESIGNER,
+
+                            WHO SPECIALIZES IN CRAFTING
                             <span className={`mx-2 ${isFlashing ? 'flashing' : ''}`}>
                             UNIQUE
                         </span>
-                            DIGITAL EXPERIENCES
+                            DIGITAL EXPERIENCES.
                         </div>
                     </div>
 
@@ -247,10 +257,15 @@ function App() {
                     <motion.button
                         animate={{
                             borderColor: colorSchemes[colorScheme].text,
-                            color: colorSchemes[colorScheme].text
+                            color: colorSchemes[colorScheme].text,
+                        }}
+                        whileHover={{
+                            backgroundColor: "black",
+                            color: "white", // Explicitly set the text color on hover
                         }}
                         whileTap={{scale: 0.95}}
-                        className="px-[37px] py-2.5 rounded-[50px] border-[2.5px] justify-center items-center gap-2.5 flex text-center text-[30px] font-medium focus:outline-none hover:bg-black hover:text-white transition-colors"
+                        onClick={() => window.location.href = 'mailto:dancr.wley@gmail.com'}
+                        className="px-[37px] py-2.5 rounded-[50px] border-[2.5px] justify-center items-center gap-2.5 flex text-center text-[30px] font-medium focus:outline-none transition-colors"
                     >
                         CONTACT
                     </motion.button>
@@ -271,7 +286,7 @@ function App() {
                         transition={{duration: 0.5}}
                         className="w-full px-6 min-h-screen flex flex-col justify-center items-center"
                     >
-                        <div className="w-full space-y-2 justify-center items-center lg:space-y-0 lg:space-x-4 flex flex-col lg:flex-row relative">
+                    <div className="w-full space-y-2 justify-center items-center lg:space-y-0 lg:space-x-4 flex flex-col lg:flex-row relative">
                             <AnimatePresence mode="popLayout">
                                 <motion.div
                                     key={currentWorkIndex}
@@ -289,19 +304,20 @@ function App() {
                                     }}
                                     transition={{duration: 0.5, ease: "easeInOut"}}
                                 >
-                                    <WorksEntry workData={works[currentWorkIndex]}/>
+                                    {(() => {
+                                        const Component = works[currentWorkIndex].component;
+                                        return <Component />;
+                                    })()}
                                 </motion.div>
                             </AnimatePresence>
 
                             {/* Nav arrow */}
                             <motion.div
-                                className={`absolute ${currentWorkIndex === 0 ? 'right-[2rem]' : 'left-[2rem]'} top-1/2 transform -translate-y-1/2 cursor-pointer`}
-                                whileHover={{scale: 1.1}}
-                                whileTap={{scale: 0.95}}
+                                className={`absolute ${currentWorkIndex === 0 ? 'right-[2px]' : 'left-[-2px]'}    md:bottom-auto md:top-1/2 transform -translate-y-1/2 cursor-pointer`}
                                 onClick={handleWorkNav}
                             >
                                 <img
-                                    className={`w-12 h-12 m-0 p-0 ${currentWorkIndex === 0 ? '' : 'rotate-180'}`}
+                                    className={`w-10 h-8 m-0 p-0 ${currentWorkIndex === 0 ? '' : 'rotate-180'}`}
                                     src={navArrow}
                                     alt="nav arrow"
                                 />
