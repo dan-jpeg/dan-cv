@@ -4,7 +4,7 @@
 
 :root {
   font-family: Helvetica, system-ui, Avenir, Inter, Arial, sans-serif;
-  line-height: 1;
+  line-height: 1.5;
   font-weight: 400;
 
   font-synthesis: none;
@@ -75,7 +75,3 @@ html, body {
 }
 
 /* Ensure the container takes the full width and height */
-body {
-  width: 100vw;
-  height: 100vh;
-}

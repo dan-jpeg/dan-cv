@@ -5,19 +5,79 @@ import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-
 import SkillsTab from "./SkillsTab2.jsx";
 import { colorSchemes } from './colorSchemes';
 import WorksEntry, { WorksEntryEdie } from "./WorksEntry.jsx";
-import navArrow from '/src/assets/nav-arrow.svg'
+import navArrow from '/src/assets/small-arrow.svg'
 
+const NavArrow = ({ isVisible, onClick }) => {
 
-const Header = () => {
+    const [isScrolling, setScrolling] = useState(false);
+
     return (
-        <div className={`flex justify-between w-screen font-bold px-6 fixed top-4 font-['Neue Haas Grotesk Display Pro'] text-[18px] md:text-[24px]`}>
-        <span className="text  "> DANIEL CROWLEY</span>
-        <span className="text "> CV</span>
+        <AnimatePresence>
+            {isVisible && (
+                <motion.div
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.3 }}
+                    className="fixed top-20 right-1/2 transform -translate-x-full cursor-pointer z-50"
+                    onClick={onClick}
+                >
+                    <img
+                        src={navArrow}
+                        alt="navigation arrow"
+                        className="w-10 h-8 m-0 p-0 rotate-90"
+                    />
+                </motion.div>
+            )}
+        </AnimatePresence>
+    );
+};
+
+const Header = ({workOpen, skillsOpen }) => {
+
+    const [isScrolling, setIsScrolling] = useState(false);
+
+
+    const handleScrollToTop = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    };
+
+    const handleArrowClick  = async () => {
+        setIsScrolling(true);
+        handleScrollToTop()
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        setIsScrolling(false)
+    }
+
+    return (
+
+
+        <div
+            className={`flex justify-between w-screen font-bold px-6 fixed top-4 z-50 font-['Neue Haas Grotesk Display Pro'] text-[18px] md:text-[24px]`}>
+            <span className="text  "> DANIEL CROWLEY</span>
+            {(workOpen || skillsOpen) && (
+                <motion.div
+
+                    className={`fixed top-4 left-1/2 m-0 p-0 transform -translate-x-1/2 cursor-pointer ${isScrolling ? 'opacity-0' : 'opacity-100'}`}
+                    onClick={handleArrowClick}
+                >
+                    <img
+                        src={navArrow}
+                        alt="navig  ation arrow"
+                        className="w-8 h-8 m-0 p-0 rotate-180"
+                    />
+                </motion.div>
+            )}
+            <span className="text "> CV</span>
         </div>
     )
 }
 
-const WorkInfoTitle = ({ scrollPosition, isVisible, title, url }) => {
+
+const WorkInfoTitle = ({scrollPosition, isVisible, title, url}) => {
     const [isHovered, setIsHovered] = useState(false);
 
     const handleLinkClick = () => {
@@ -66,7 +126,8 @@ function App() {
     const { scrollY } = useScroll();
     const [isTransitioning, setIsTransitioning] = useState(false);
     const [currentWorkIndex, setCurrentWorkIndex] = useState(0);
-    const [direction, setDirection] = useState('');
+    const [direction, setDirection] =
+        useState('');
 
     const works = [
         {
@@ -195,7 +256,7 @@ function App() {
             }}
             transition={{duration: 0.8, ease: "linear"}}
         >
-            <Header colorScheme={colorScheme}/>
+            <Header colorScheme={colorScheme} workOpen={workOpen} skillsOpen={skillsOpen}/>
             <WorkInfoTitle
                 scrollPosition={scrollPosition}
                 isVisible={shouldShowWorkInfo}
@@ -205,23 +266,23 @@ function App() {
 
             {/* First viewport - About section */}
             <div
-                className="w-full min-h-screen flex flex-col justify-center items-center font-['Neue Haas Grotesk Display Pro']">
+                className="w-full min-h-screen flex flex-col  items-center font-['Neue Haas Grotesk Display Pro']">
                 <motion.div
-                    className="flex flex-col justify-center items-center gap-[13px]"
+                    className="flex flex-col justify-center items-center gap-[12px]"
                     animate={{
                         color: colorSchemes[colorScheme].text
                     }}
                     transition={{duration: 0.8}}
                 >
-                    <div className="pb-4 pt-20 text-center text-[36px] md:text-[66px] font-medium">
+                    <div className="pb-4  pt-32 md:pt-40 text-center text-[36px] md:text-[66px] font-medium">
                         ABOUT
                     </div>
                     <div className="w-screen pb-4 justify-center items-center gap-2.5 inline-flex">
                         <div
-                            className="text-center w-2/3 text-[18px] leading-5 md:leading-7 md:text-[24px] lg:leading-9 lg:text-[32px] space-y-2 font-medium">
-                            DANIEL CROWLEY A PRODUCT DESIGNER WHO LIVES IN NYC.
+                            className="text-center w-2/3 text-[18px] leading-5 md:leading-7 md:text-[24px] lg:max-w-screen-md lg:leading-9 lg:text-[32px] space-y-2 font-medium">
+                            DANIEL CROWLEY AN NYC BASED PRODUCT DESIGNER
 
-                            HE SPECIALIZES IN CRAFTING
+                            THAT SPECIALIZES IN CRAFTING
                             <span className={`mx-2 ${isFlashing ? 'flashing' : ''}`}>
                             UNIQUE
                         </span>
@@ -233,7 +294,7 @@ function App() {
 
                     {/* Button with Flashing Text Effect */}
                     <motion.button
-                        className="px-[37px] py-2.5 rounded-[50px] border-[2.5px] justify-center items-center gap-2.5 flex focus:outline-none transition-colors"
+                        className="px-8 md:px-[37px] py-1.5 md:py-2.5  rounded-[50px] border-[2.5px] justify-center items-center gap-2.5 flex focus:outline-none transition-colors"
                         animate={{
                             borderColor: colorSchemes[colorScheme].text,
                             color: colorSchemes[colorScheme].text
@@ -243,7 +304,7 @@ function App() {
                         onMouseLeave={() => setIsFlashing(false)}
                         onClick={handleWorkClick}
                     >
-                    <span className={`text-[30px] font-medium ${isFlashing ? 'flashing' : ''}`}>
+                    <span className={` text-[24px] md:text-[30px] font-medium ${isFlashing ? 'flashing' : ''}`}>
                         SELECTED WORK
                     </span>
                     </motion.button>
@@ -256,7 +317,7 @@ function App() {
                         }}
                         whileTap={{scale: 0.95}}
                         onClick={handleSkillsClick}
-                        className="px-[37px] py-2.5 rounded-[50px] border-[2.5px] skills-cursor justify-center items-center gap-2.5 flex text-center text-[30px] font-medium focus:outline-none hover:rounded-3xl hover:bg-opacity-0 hover:text-opacity-0 duration-[60ms] transition-colors"
+                        className="px-8 md:px-[37px] py-1.5 md:py-2.5 rounded-[50px] border-[2.5px] skills-cursor justify-center items-center gap-2.5 flex text-center text-[24px] md:text-[30px] font-medium focus:outline-none hover:rounded-3xl hover:bg-opacity-0 hover:text-opacity-0 duration-[60ms] transition-colors"
                     >
                         SKILLS
                     </motion.button>
@@ -273,7 +334,7 @@ function App() {
                         }}
                         whileTap={{scale: 0.95}}
                         onClick={() => window.location.href = 'mailto:dancr.wley@gmail.com'}
-                        className="px-[37px] py-2.5 rounded-[50px] border-[2.5px] justify-center items-center gap-2.5 flex text-center text-[30px] font-medium focus:outline-none transition-colors"
+                        className="px-8 md:px-[37px] py-1.5 md:py-2.5 rounded-[50px] border-[2.5px] justify-center items-center gap-2.5 flex text-center text-[24px] md:text-[30px] font-medium focus:outline-none transition-colors"
                     >
                         CONTACT
                     </motion.button>
@@ -325,7 +386,7 @@ function App() {
                                 onClick={handleWorkNav}
                             >
                                 <img
-                                    className={`w-10 h-8 m-0 p-0 ${currentWorkIndex === 0 ? '' : 'rotate-180'}`}
+                                    className={`w-10 h-8 m-0 p-0 ${currentWorkIndex === 0 ? '-rotate-90' : 'rotate-90'}`}
                                     src={navArrow}
                                     alt="nav arrow"
                                 />
@@ -346,16 +407,7 @@ function App() {
                         className="w-full min-h-screen flex flex-col justify-center items-center"
                     >
                         <SkillsTab/>
-                        <motion.div
-                            className="text-3xl mt-8 hover:cursor-n-resize font-bold"
-                            animate={{
-                                color: colorSchemes[colorScheme].text
-                            }}
-                            whileTap={{scale: 0.95}}
-                            onClick={handleSkillsClose}
-                        >
-                            CLOSE SKILLS
-                        </motion.div>
+
                     </motion.div>
                 )}
             </AnimatePresence>

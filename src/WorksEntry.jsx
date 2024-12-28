@@ -1,10 +1,11 @@
 
 const WorksEntry = () => {
     return (
+
         <div className={`w-full mb-0 max-w-[550px] flex justify-center items-center  h-screen  `}>
 
                 <video
-                    className=" w-full h-full max-h-[60vh] justify-self-center object-contain"
+                    className=" w-full transform   h-full max-h-[60vh] justify-self-center object-contain"
                     autoPlay
                     muted
                     loop
