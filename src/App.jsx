@@ -280,7 +280,7 @@ function App() {
                     <div className="w-screen pb-4 justify-center items-center gap-2.5 inline-flex">
                         <div
                             className="text-center w-2/3 text-[18px] leading-5 md:leading-7 md:text-[24px] lg:max-w-screen-md lg:leading-9 lg:text-[32px] space-y-2 font-medium">
-                            DANIEL CROWLEY AN NYC BASED PRODUCT DESIGNER
+                            DANIEL CROWLEY IS AN NYC BASED PRODUCT DESIGNER
 
                             THAT SPECIALIZES IN CRAFTING
                             <span className={`mx-2 ${isFlashing ? 'flashing' : ''}`}>
@@ -381,8 +381,8 @@ function App() {
                             </AnimatePresence>
 
                             {/* Nav arrow */}
-                            <motion.div
-                                className={`absolute ${currentWorkIndex === 0 ? 'right-[2px]' : 'left-[-2px]'}    md:bottom-auto md:top-1/2 transform -translate-y-1/2 cursor-pointer`}
+                            <div
+                                className={`absolute ${currentWorkIndex === 0 ? 'right-[-12px] left-auto' : 'left-[-28px] right-auto'}    md:bottom-auto md:top-1/2  -translate-y-1/2 cursor-pointer`}
                                 onClick={handleWorkNav}
                             >
                                 <img
@@ -390,7 +390,7 @@ function App() {
                                     src={navArrow}
                                     alt="nav arrow"
                                 />
-                            </motion.div>
+                            </div>
                         </div>
                     </motion.div>
                 )}
