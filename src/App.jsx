@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import arrow from '/src/assets/arrow_14.svg';
 import linkArrow from '/src/assets/link-arrow-test.svg';
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
@@ -57,7 +57,7 @@ const Header = ({workOpen, skillsOpen }) => {
 
         <div
             className={`flex justify-between w-screen font-bold px-6 fixed top-4 z-50 font-['Neue Haas Grotesk Display Pro'] text-[18px] md:text-[24px]`}>
-            <span className="text  "> DANIEL CROWLEY</span>
+            <span className="text  opacity-0 "> DANIEL CROWLEY</span>
             {(workOpen || skillsOpen) && (
                 <motion.div
 
@@ -71,7 +71,7 @@ const Header = ({workOpen, skillsOpen }) => {
                     />
                 </motion.div>
             )}
-            <span className="text "> CV</span>
+            <span className="text  opacity-0 "> CV</span>
         </div>
     )
 }
@@ -87,13 +87,13 @@ const WorkInfoTitle = ({scrollPosition, isVisible, title, url}) => {
     return (
         <AnimatePresence>
             {isVisible && (
-                <div className="fixed left-1/2 z-20 transform -translate-x-1/2 bottom-6">
+                <div className="fixed left-1/2 z-20 transform -translate-x-1/2 bottom-6 md:bottom-[100px]">
                     <motion.div
                         initial={{opacity: 1, y: 60}}
                         animate={{opacity: 1, y: 0}}
                         exit={{opacity: 0, y: 45}}
                         transition={{delay: 0.2, ease: "linear", duration: 0.142}}
-                        className="font-['Neue Haas Grotesk Display Pro'] font-bold text-[18px] md:text-[24px] relative inline-block"
+                        className="font-['Neue Haas Grotesk Display Pro'] font-bold text-[15px] md:text-[24px] relative inline-block"
                     >
                         {title}
                         <motion.div
@@ -128,6 +128,18 @@ function App() {
     const [currentWorkIndex, setCurrentWorkIndex] = useState(0);
     const [direction, setDirection] =
         useState('');
+
+    const [showSecondaryContent, setShowSecondaryContent] = useState(false);
+
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowSecondaryContent(true);
+        }, 1500);
+
+        return () => clearTimeout(timer);
+    }, []);
+
 
     const works = [
         {
@@ -274,70 +286,101 @@ function App() {
                     }}
                     transition={{duration: 0.8}}
                 >
-                    <div className="pb-4  pt-32 md:pt-40 text-center text-[36px] md:text-[66px] font-medium">
-                        ABOUT
+
+                    <div
+                        className="text-center  pt-32 md:pt-[31vh] w-2/3 lg:w-full text-[18px] leading-5 md:leading-7 md:text-[24px] lg:max-w-screen-lg lg:leading-9 lg:text-[32px] space-y-2 font-medium">
+                        <p>
+                            <motion.span initial={{opacity: 1}}>DANIEL CROWLEY</motion.span>
+                            {' '}
+                            <motion.span
+                                initial={{opacity: 0}}
+                                animate={{opacity: showSecondaryContent ? 1 : 0}}
+                                transition={{duration: 0.1, delay: 0.1}}
+                            >IS A
+                            </motion.span>
+
+
+                            <motion.span
+                                initial={{opacity: 0}}
+                                animate={{opacity: showSecondaryContent ? 1 : 0}}
+                                transition={{duration: 0.1, delay: 3.333}}
+                            >N NYC-BASED
+                            </motion.span>
+                            < br/>
+                            <motion.span initial={{opacity: 1}}>PRODUCT DESIGNER</motion.span>
+                            {' '}
+                            <motion.span
+                                initial={{opacity: 0}}
+                                animate={{opacity: showSecondaryContent ? 1 : 0}}
+                                transition={{duration: 0.1, delay: 0.7}}
+                            >
+                                THAT SPECIALIZES IN CRAFTING
+                                <span className={`mx-2 ${isFlashing ? 'flashing' : ''}`}>UNIQUE</span>
+                                DIGITAL EXPERIENCES.
+                            </motion.span>
+                        </p>
                     </div>
-                    <div className="w-screen pb-4 justify-center items-center gap-2.5 inline-flex">
-                        <div
-                            className="text-center w-2/3 text-[18px] leading-5 md:leading-7 md:text-[24px] lg:max-w-screen-md lg:leading-9 lg:text-[32px] space-y-2 font-medium">
-                            DANIEL CROWLEY IS AN NYC BASED PRODUCT DESIGNER
 
-                            THAT SPECIALIZES IN CRAFTING
-                            <span className={`mx-2 ${isFlashing ? 'flashing' : ''}`}>
-                            UNIQUE
-                        </span>
-                            DIGITAL EXPERIENCES.
-                        </div>
-                    </div>
+                    <motion.img
+                        initial={{opacity: 0}}
+                        animate={{opacity: showSecondaryContent ? 1 : 0}}
+                        transition={{duration: 0.1, delay: 1.2}}
+                        src={arrow} alt="arrow" className="pb-12 pt-6"/>
 
-                    <img src={arrow} alt="arrow" className="pb-12"/>
+                    <motion.div className={`flex flex-col justify-center items-center gap-[12px]`}
 
-                    {/* Button with Flashing Text Effect */}
-                    <motion.button
-                        className="px-8 md:px-[37px] py-1.5 md:py-2.5  rounded-[50px] border-[2.5px] justify-center items-center gap-2.5 flex focus:outline-none transition-colors"
-                        animate={{
-                            borderColor: colorSchemes[colorScheme].text,
-                            color: colorSchemes[colorScheme].text
-                        }}
-                        whileTap={{scale: 0.95}}
-                        onMouseEnter={() => setIsFlashing(true)}
-                        onMouseLeave={() => setIsFlashing(false)}
-                        onClick={handleWorkClick}
+                        initial={{opacity: 0}}
+                        animate={{opacity: showSecondaryContent ? 1 : 0}}
+                                    transition={{duration: 0.1, delay: 1.5}}
                     >
+                        <motion.button
+                            className="px-8 md:px-[37px] py-1.5 md:py-2.5  rounded-[50px] border-[2.5px] justify-center items-center gap-2.5 flex focus:outline-none transition-colors"
+                            animate={{
+                                borderColor: colorSchemes[colorScheme].text,
+                                color: colorSchemes[colorScheme].text
+                            }}
+                            whileTap={{scale: 0.95}}
+                            onMouseEnter={() => setIsFlashing(true)}
+                            onMouseLeave={() => setIsFlashing(false)}
+                            onClick={handleWorkClick}
+                        >
                     <span className={` text-[24px] md:text-[30px] font-medium ${isFlashing ? 'flashing' : ''}`}>
                         SELECTED WORK
                     </span>
-                    </motion.button>
+                        </motion.button>
 
-                    {/* Skills Button */}
-                    <motion.button
-                        animate={{
-                            borderColor: colorSchemes[colorScheme].text,
-                            color: colorSchemes[colorScheme].text
-                        }}
-                        whileTap={{scale: 0.95}}
-                        onClick={handleSkillsClick}
-                        className="px-8 md:px-[37px] py-1.5 md:py-2.5 rounded-[50px] border-[2.5px] skills-cursor justify-center items-center gap-2.5 flex text-center text-[24px] md:text-[30px] font-medium focus:outline-none hover:rounded-3xl hover:bg-opacity-0 hover:text-opacity-0 duration-[60ms] transition-colors"
-                    >
-                        SKILLS
-                    </motion.button>
+                        {/* Skills Button */}
+                        <motion.button
+                            animate={{
+                                borderColor: colorSchemes[colorScheme].text,
+                                color: colorSchemes[colorScheme].text
+                            }}
+                            whileTap={{scale: 0.95}}
+                            onClick={handleSkillsClick}
+                            className="px-8 md:px-[37px] py-1.5 md:py-2.5 rounded-[50px] border-[2.5px] skills-cursor justify-center items-center gap-2.5 flex text-center text-[24px] md:text-[30px] font-medium focus:outline-none hover:rounded-3xl hover:bg-opacity-0 hover:text-opacity-0 duration-[60ms] transition-colors"
+                        >
+                            SKILLS
+                        </motion.button>
 
-                    {/* Contact Button */}
-                    <motion.button
-                        animate={{
-                            borderColor: colorSchemes[colorScheme].text,
-                            color: colorSchemes[colorScheme].text,
-                        }}
-                        whileHover={{
-                            backgroundColor: "black",
-                            color: "white", // Explicitly set the text color on hover
-                        }}
-                        whileTap={{scale: 0.95}}
-                        onClick={() => window.location.href = 'mailto:dancr.wley@gmail.com'}
-                        className="px-8 md:px-[37px] py-1.5 md:py-2.5 rounded-[50px] border-[2.5px] justify-center items-center gap-2.5 flex text-center text-[24px] md:text-[30px] font-medium focus:outline-none transition-colors"
-                    >
-                        CONTACT
-                    </motion.button>
+                        {/* Contact Button */}
+                        <motion.button
+                            animate={{
+                                borderColor: colorSchemes[colorScheme].text,
+                                color: colorSchemes[colorScheme].text,
+                            }}
+                            whileHover={{
+                                backgroundColor: "black",
+                                color: "white", // Explicitly set the text color on hover
+                            }}
+                            whileTap={{scale: 0.95}}
+                            onClick={() => window.location.href = 'mailto:dancr.wley@gmail.com'}
+                            className="px-8 md:px-[37px] py-1.5 md:py-2.5 rounded-[50px] border-[2.5px] justify-center items-center gap-2.5 flex text-center text-[24px] md:text-[30px] font-medium focus:outline-none transition-colors"
+                        >
+                            CONTACT
+                        </motion.button>
+                    </motion.div>
+                    {/* Button with Flashing Text Effect */}
+
                 </motion.div>
 
 
@@ -355,18 +398,19 @@ function App() {
                         transition={{duration: 0.5}}
                         className="w-full px-6 min-h-screen flex flex-col justify-center items-center"
                     >
-                    <div className="w-full space-y-2 justify-center items-center lg:space-y-0 lg:space-x-4 flex flex-col lg:flex-row relative">
+                        <div
+                            className="w-full space-y-2 justify-center items-center lg:space-y-0 lg:space-x-4 flex flex-col lg:flex-row relative">
                             <AnimatePresence mode="popLayout">
                                 <motion.div
                                     key={currentWorkIndex}
                                     initial={direction === '' ?
-                                        { opacity: 0 } : // Initial load
+                                        {opacity: 0} : // Initial load
                                         {
                                             opacity: 0,
                                             x: direction === 'right' ? 1200 : -1200
                                         }
                                     }
-                                    animate={{ opacity: 1, x: 0 }}
+                                    animate={{opacity: 1, x: 0}}
                                     exit={{
                                         opacity: 0,
                                         x: direction === 'right' ? 1200 : -1200
@@ -375,7 +419,7 @@ function App() {
                                 >
                                     {(() => {
                                         const Component = works[currentWorkIndex].component;
-                                        return <Component />;
+                                        return <Component/>;
                                     })()}
                                 </motion.div>
                             </AnimatePresence>

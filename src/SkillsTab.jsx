@@ -1,5 +1,6 @@
+import {motion} from "framer-motion";
 
-const SkillsTab2     = () => {
+const SkillsTab2 = () => {
     return (
         <div
             className="h-[334px] px-6 py-8 bg-white flex-col justify-start items-start gap-2.5 inline-flex overflow-hidden">
@@ -68,4 +69,36 @@ const SkillsTab2     = () => {
 }
 
 export default SkillsTab2;
+
+
+const SkillsTab3 = () => {
+    return  (
+<div
+    className="text-center  pt-32 md:pt-40 w-2/3 text-[18px] leading-5 md:leading-7 md:text-[24px] lg:max-w-screen-md lg:leading-9 lg:text-[32px] space-y-2 font-medium">
+    <p>
+        <motion.span initial={{opacity: 1}}>DANIEL CROWLEY</motion.span>
+        {' '}
+        <motion.span
+            initial={{opacity: 0}}
+            animate={{opacity: showSecondaryContent ? 1 : 0}}
+            transition={{duration: 0.5}}
+        >IS AN NYC BASED
+        </motion.span>
+        {' '}
+        <motion.span initial={{opacity: 1}}>PRODUCT DESIGNER</motion.span>
+        {' '}
+        <motion.span
+            initial={{opacity: 0}}
+            animate={{opacity: showSecondaryContent ? 1 : 0}}
+            transition={{duration: 0.5}}
+        >
+            THAT SPECIALIZES IN CRAFTING
+            <span className={`mx-2 ${isFlashing ? 'flashing' : ''}`}>UNIQUE</span>
+            DIGITAL EXPERIENCES.
+        </motion.span>
+    </p>
+</div>
+    )
+}
+
 
