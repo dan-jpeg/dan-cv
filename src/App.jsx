@@ -48,7 +48,7 @@ const Header = ({workOpen, skillsOpen }) => {
     const handleArrowClick  = async () => {
         setIsScrolling(true);
         handleScrollToTop()
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 1300));
         setIsScrolling(false)
     }
 
@@ -131,7 +131,7 @@ function App() {
 
     const scrollTo = async (target) => {
         await animate(window.scrollY, target, {
-            duration: 1,
+            duration: 0.2,
             type: "tween",
             ease: "easeInOut",
             onUpdate: latest => window.scrollTo(0, latest)
@@ -241,10 +241,17 @@ function App() {
 
         const element = skillsSectionRef.current;
         if (element) {
-            element.scrollIntoView({
-                behavior: window.safari ? 'auto' : 'smooth',
-                block: 'start'
+            await animate(window.scrollY, element.offsetTop, {
+                duration: 0.3,
+                type: "tween",
+                ease: "linear",
+                onUpdate: latest => window.scrollTo(0, latest)
             });
+
+
+
+        setIsTransitioning(false);
+
 
             // Adding a delay before allowing scroll-to-top to work
             await new Promise(resolve => setTimeout(resolve, 800));
@@ -255,13 +262,11 @@ function App() {
     const handleSkillsClose = async () => {
         setIsTransitioning(true);
 
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
+        scrollTo()
 
-        await new Promise(resolve => setTimeout(resolve, 800));
         setSkillsOpen(false);
+        await new Promise(resolve => setTimeout(resolve, 1200));
+
         setIsTransitioning(false);
     };
 
@@ -426,6 +431,7 @@ function App() {
                         transition={{duration: 0.5}}
                         className="w-full min-h-screen flex flex-col justify-center items-center"
                     >
+                        <Header colorScheme={colorScheme} workOpen={workOpen} skillsOpen={skillsOpen}/>
                         <SkillsTab/>
 
                     </motion.div>
