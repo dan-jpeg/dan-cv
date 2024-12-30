@@ -29,7 +29,7 @@ const SkillRow = ({ title, filledCount, index }) => {
             transition={{ delay: index * 0.07 }}
             className="flex justify-between items-center w-full"
         >
-            <div className="text-center text-black text-xl font-medium font-['Neue Haas Grotesk Display Pro']">
+            <div className="text-center text-black sm:text-[16px] md:text-xl font-medium font-['Neue Haas Grotesk Display Pro']">
                 {title}
             </div>
             <ThreeCircles filledCount={filledCount} />
@@ -48,18 +48,14 @@ const SkillsTab = () => {
 
     return (
         <motion.div
-            initial={{ height: 0, y: -15, opacity: 0 }}
+            initial={{ height: 0, y: 0, opacity: 0 }}
             animate={{ height: "auto", y: 0, opacity: 1 }}
-            exit={{ height: 0, y: 15, opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="p-6 bg-white overflow-hidden"
+            exit={{ height: 0, y: 0, opacity: 0 }}
+            transition={{ duration: 0.1, ease: "linear" }}
+            className="p-6 bg-white overflow-hidden "
         >
-            <div className="flex min-w-[400px] md:min-w-[550px] rounded-[5px] border-2 justify-center items-center rounded-2 border-black px-6 py-10 flex-col gap-4">
-                <button
-                    className="py-2.5 rounded-[50px] max-w-[300px] w-2/3  mb-12 border-[2.5px] border-black skills-cursor justify-center items-center gap-2.5 flex text-center text-black text-[30px] font-medium font-['Neue Haas Grotesk Display Pro'] focus:outline-none hover:rounded-3xl hover:bg-opacity-60 cursor-all-scroll duration-[60ms] transition-colors"
-                >
-                    SKILLS
-                </button>
+            <div className="flex w-screen md:w-[550px] lg:w-[720px] rounded-[5px]  justify-center items-center rounded-2 py-12 px-16 flex-col gap-4">
+
                 {skills.map((skill, index) => (
                     <SkillRow
                         key={index}
@@ -68,6 +64,10 @@ const SkillsTab = () => {
                         index={index}
                     />
                 ))}
+
+                <div className="absolute bottom-4 flex ">
+                    <span className="items-center fixed bottom-4 left-1/2 translate -translate-x-1/2  sm:text-[16px] md:text-xl font-medium font-['Neue Haas Grotesk Display Pro']" >SKILLS</span>
+                </div>
             </div>
         </motion.div>
     );
