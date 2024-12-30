@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import arrow from '/src/assets/arrow_14.svg';
 import linkArrow from '/src/assets/link-arrow-test.svg';
-import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useMotionValueEvent, animate } from 'framer-motion';
 import SkillsTab from "./SkillsTab2.jsx";
 import { colorSchemes } from './colorSchemes';
 import WorksEntry, { WorksEntryEdie } from "./WorksEntry.jsx";
@@ -129,6 +129,16 @@ function App() {
     const [direction, setDirection] =
         useState('');
 
+    const scrollTo = async (target) => {
+        await animate(window.scrollY, target, {
+            duration: 1,
+            type: "tween",
+            ease: "easeInOut",
+            onUpdate: latest => window.scrollTo(0, latest)
+        })
+    }
+
+
     const works = [
         {
             id: 1,
@@ -178,26 +188,35 @@ function App() {
 
     const skillsSectionRef = useRef(null);
 
+    const glitchEffect =  async () => {
+        setColorScheme('studio');
+        await new Promise(resolve => setTimeout(resolve, window.safari ? 400 : 220));
+        setColorScheme('default');
+
+    }
 
     const handleWorkClick = async () => {
         setDirection('');
         setIsTransitioning(true);
         setWorkOpen(true);
-        await new Promise(resolve => setTimeout(resolve, 10));
+
+        glitchEffect()
+
+        await new Promise(resolve => setTimeout(resolve, 5)); // Wait for render
+
 
         const element = workSectionRef.current;
         if (element) {
-            element.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
+            await animate(window.scrollY, element.offsetTop, {
+                duration: 0.3,
+                type: "tween",
+                ease: "linear",
+                onUpdate: latest => window.scrollTo(0, latest)
             });
 
-            await new Promise(resolve => setTimeout(resolve, 80));
-            setColorScheme('studio');
-            await new Promise(resolve => setTimeout(resolve, 220));
-            setColorScheme('default');
-            setIsTransitioning(false);
+
         }
+        setIsTransitioning(false);
     }
 
 
@@ -223,7 +242,7 @@ function App() {
         const element = skillsSectionRef.current;
         if (element) {
             element.scrollIntoView({
-                behavior: 'smooth',
+                behavior: window.safari ? 'auto' : 'smooth',
                 block: 'start'
             });
 
@@ -256,7 +275,7 @@ function App() {
             }}
             transition={{duration: 0.8, ease: "linear"}}
         >
-            <Header colorScheme={colorScheme} workOpen={workOpen} skillsOpen={skillsOpen}/>
+
             <WorkInfoTitle
                 scrollPosition={scrollPosition}
                 isVisible={shouldShowWorkInfo}
@@ -355,6 +374,7 @@ function App() {
                         transition={{duration: 0.5}}
                         className="w-full px-6 min-h-screen flex flex-col justify-center items-center"
                     >
+                        <Header colorScheme={colorScheme} workOpen={workOpen} skillsOpen={skillsOpen}/>
                     <div className="w-full space-y-2 justify-center items-center lg:space-y-0 lg:space-x-4 flex flex-col lg:flex-row relative">
                             <AnimatePresence mode="popLayout">
                                 <motion.div
