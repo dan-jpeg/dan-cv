@@ -293,7 +293,7 @@ function App() {
                     }}
                     transition={{duration: 0.8}}
                 >
-                    <div className="pb-4  pt-32 md:pt-40 text-center text-[36px] md:text-[66px] font-medium">
+                    <div className="pb-4   opacity-0 pt-32 md:pt-40 text-center text-[36px] md:text-[66px] font-medium">
                         ABOUT
                     </div>
                     <div className="w-screen pb-4 justify-center items-center gap-2.5 inline-flex">
