@@ -211,9 +211,9 @@ function App() {
         const element = workSectionRef.current;
         if (element) {
             await animate(window.scrollY, element.offsetTop, {
-                duration: 0.3,
+                duration: 0.4,
                 type: "tween",
-                ease: "linear",
+                ease: "easeOut",
                 onUpdate: latest => window.scrollTo(0, latest)
             });
 
