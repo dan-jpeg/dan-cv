@@ -1,6 +1,5 @@
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import navArrow from '/src/assets/nav-arrow.svg'
+import { motion } from 'framer-motion';
 
 const ThreeCircles = ({ filledCount = 0 }) => {
     return (
@@ -36,7 +35,7 @@ const SkillRow = ({ title, filledCount, index }) => {
     );
 };
 
-const SkillsTab = () => {
+const SkillsTab = ({ isScrolling, isTransitioning }) => {
     const skills = [
         { title: 'ADOBE', filledCount: 3 },
         { title: 'FIGMA', filledCount: 3 },
@@ -48,25 +47,28 @@ const SkillsTab = () => {
     return (
         <motion.div
             initial={{ height: 0, y: 0, opacity: 0 }}
-            animate={{ height: "auto", y: 0, opacity: 1 }}
+            animate={{ height: 'auto', y: 0, opacity: 1 }}
             exit={{ height: 0, y: 0, opacity: 0 }}
-            transition={{ duration: 0.1, ease: "linear" }}
-            className="p-6 bg-white overflow-hidden "
+            transition={{ duration: 0.001, ease: 'linear' }}
+            className="p-6 bg-white overflow-hidden"
         >
-            <div className="flex w-screen md:w-[550px] lg:w-[720px] rounded-[5px]  justify-center items-center rounded-2 py-12 px-16 flex-col gap-4">
-
+            <div className="flex w-screen md:w-[550px] lg:w-[720px] rounded-[5px] justify-center items-center py-12 px-16 flex-col gap-4">
                 {skills.map((skill, index) => (
                     <SkillRow
-                        key={index}
+                        key={`${skill.title}-${index}`}
                         title={skill.title}
                         filledCount={skill.filledCount}
                         index={index}
                     />
                 ))}
 
-                <div className="absolute bottom-4 flex ">
-                    <span className="items-center fixed bottom-4 left-1/2 translate -translate-x-1/2  sm:text-[16px] md:text-xl font-medium font-['Neue Haas Grotesk Display Pro']" >SKILLS</span>
-                </div>
+                {!isTransitioning && (
+                    <div className="absolute bottom-4 flex">
+                        <span className={`fixed bottom-4 ${isScrolling ? "opacity-0" : "" } left-1/2 transform -translate-x-1/2 sm:text-[16px] md:text-xl font-medium font-['Neue Haas Grotesk Display Pro'] transition duration-0`}>
+                            SKILLS
+                        </span>
+                    </div>
+                )}
             </div>
         </motion.div>
     );

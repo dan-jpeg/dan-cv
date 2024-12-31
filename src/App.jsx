@@ -33,9 +33,9 @@ const NavArrow = ({ isVisible, onClick }) => {
     );
 };
 
-const Header = ({workOpen, skillsOpen, isTransitioning }) => {
+const Header = ({workOpen, skillsOpen, isTransitioning, setIsTransitioning,setIsScrolling, isScrolling }) => {
 
-    const [isScrolling, setIsScrolling] = useState(false);
+
 
 
     const handleScrollToTop = () => {
@@ -44,21 +44,22 @@ const Header = ({workOpen, skillsOpen, isTransitioning }) => {
             behavior: 'smooth'
         });
     };
-
-    const handleArrowClick  = async () => {
+    const handleArrowClick = async () => {
+        // setIsTransitioning(true);
         setIsScrolling(true);
-        handleScrollToTop()
+        handleScrollToTop();
         await new Promise(resolve => setTimeout(resolve, 1300));
-        setIsScrolling(false)
-    }
+        setIsScrolling(false);
+        // setIsTransitioning(false);
+    };
 
     return (
 
 
         <div
-            className={`flex justify-between w-screen font-bold px-6 fixed top-4 z-50 font-['Neue Haas Grotesk Display Pro'] text-[18px] md:text-[24px]`}>
+            className={`flex justify-between w-screen font-bold ${isScrolling ? "opacity-0" : ""} px-6 fixed top-4 z-50 font-['Neue Haas Grotesk Display Pro'] text-[18px] md:text-[24px] transition duration-0`}>
             <span className="text  "> DANIEL CROWLEY</span>
-            {(workOpen || skillsOpen) && (
+
                 <motion.div
 
                     className={`fixed top-4 left-1/2 m-0 p-0 transform -translate-x-1/2 cursor-pointer ${isScrolling ? 'opacity-0' : 'opacity-100'}`}
@@ -70,7 +71,7 @@ const Header = ({workOpen, skillsOpen, isTransitioning }) => {
                         className="w-8 h-8 m-0 p-0 rotate-180"
                     />
                 </motion.div>
-            )}
+
             <span className="text "> CV</span>
         </div>
     )
@@ -128,6 +129,7 @@ function App() {
     const [currentWorkIndex, setCurrentWorkIndex] = useState(0);
     const [direction, setDirection] =
         useState('');
+    const [isScrolling, setIsScrolling] = useState(false);
 
     const scrollTo = async (target) => {
         await animate(window.scrollY, target, {
@@ -190,6 +192,7 @@ function App() {
 
     const glitchEffect =  async () => {
         setColorScheme('studio');
+        // document.body.classList.add('glitch-active');
         await new Promise(resolve => setTimeout(resolve, window.safari ? 400 : 220));
         setColorScheme('default');
 
@@ -202,7 +205,7 @@ function App() {
 
         glitchEffect()
 
-        await new Promise(resolve => setTimeout(resolve, 5)); // Wait for render
+        await new Promise(resolve => setTimeout(resolve, 122)); // Wait for render
 
 
         const element = workSectionRef.current;
@@ -316,7 +319,33 @@ function App() {
                         </div>
                     </div>
 
-                    <img src={arrow} alt="arrow" className="pb-12"/>
+                    {/*<motion.img*/}
+                    {/*    src={arrow}*/}
+                    {/*    animate={{*/}
+                    {/*        filter: colorScheme === 'studio'*/}
+                    {/*            ? 'invert(17%) sepia(96%) saturate(7471%) hue-rotate(295deg) brightness(100%) contrast(105%)'*/}
+                    {/*            : 'none'*/}
+                    {/*    }}*/}
+                    {/*    alt="arrow"*/}
+                    {/*    className="pb-12"*/}
+                    {/*/>*/}
+
+                    <div className="pb-12">
+                        <svg
+                            width="16"
+                            height="120"
+                            viewBox="0 0 16 120"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            style={{color: colorScheme === 'studio' ? '#FF00FF' : 'black'}}
+                        >
+                            <path
+                                d="M7.29289 119.707C7.68342 120.098 8.31658 120.098 8.70711 119.707L15.0711 113.343C15.4616 112.953 15.4616 112.319 15.0711 111.929C14.6805 111.538 14.0474 111.538 13.6569 111.929L8 117.586L2.34315 111.929C1.95262 111.538 1.31946 111.538 0.928932 111.929C0.538408 112.319 0.538408 112.953 0.928932 113.343L7.29289 119.707ZM7 0V119H9V0H7Z"
+                                fill="currentColor"
+                            />
+                        </svg>
+                    </div>
+
 
                     {/* Button with Flashing Text Effect */}
                     <motion.button
@@ -372,7 +401,7 @@ function App() {
             {/* Work section */}
             {/* Work section */}
             <AnimatePresence>
-                {workOpen &&  (
+                {workOpen && (
                     <motion.div
                         ref={workSectionRef}
                         initial={{opacity: 0}}
@@ -381,7 +410,14 @@ function App() {
                         transition={{duration: 0.5}}
                         className="w-full px-6 min-h-screen flex flex-col justify-center items-center"
                     >
-                        {!isTransitioning &&   <Header colorScheme={colorScheme} workOpen={workOpen} skillsOpen={skillsOpen}/>}
+                    {!isTransitioning &&   <Header
+                        workOpen={workOpen}
+                        skillsOpen={skillsOpen}
+                        isTransitioning={isTransitioning}
+                        setIsTransitioning={setIsTransitioning}
+                        setIsScrolling={setIsScrolling}
+                        isScrolling={isScrolling}
+                    />}
 
                     <div className="w-full space-y-2 justify-center items-center lg:space-y-0 lg:space-x-4 flex flex-col lg:flex-row relative">
                             <AnimatePresence mode="popLayout">
@@ -434,8 +470,9 @@ function App() {
                         transition={{duration: 0.5}}
                         className="w-full min-h-screen flex flex-col justify-center items-center"
                     >
-                        <Header colorScheme={colorScheme} workOpen={workOpen} skillsOpen={skillsOpen}/>
-                        <SkillsTab/>
+                        <Header colorScheme={colorScheme} workOpen={workOpen} skillsOpen={skillsOpen} setIsTransitioning={setIsTransitioning}  setIsScrolling={setIsScrolling}
+                                isScrolling={isScrolling}/>
+                        <SkillsTab isTransitioning={isTransitioning}/>
 
                     </motion.div>
                 )}

@@ -46,6 +46,11 @@
   z-index: 1000;
 }
 
+.glitch-active img, .glitch-active svg {
+  filter: invert(100%) hue-rotate(180deg);
+  transition: filter 0.2s ease;
+}
+
 /* Flash effect animation with opacity */
 @keyframes instant-flash {
   0%, 100% {
