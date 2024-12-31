@@ -8,9 +8,8 @@ const ThreeCircles = ({ filledCount = 0 }) => {
             {[0, 1, 2].map((index) => (
                 <motion.div
                     key={index}
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ delay: index * 0.07 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
                     className={`w-4 h-4 rounded-full border-2 border-black ${
                         index < filledCount ? 'bg-[#353333]' : 'bg-transparent'
                     }`}

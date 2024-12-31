@@ -33,7 +33,7 @@ const NavArrow = ({ isVisible, onClick }) => {
     );
 };
 
-const Header = ({workOpen, skillsOpen }) => {
+const Header = ({workOpen, skillsOpen, isTransitioning }) => {
 
     const [isScrolling, setIsScrolling] = useState(false);
 
@@ -223,6 +223,7 @@ function App() {
     const handleWorkClose = async () => {
         // Start transition back to default colors
         setColorScheme('default');
+        setIsTransitioning(true)
 
         window.scrollTo({
             top: 0,
@@ -231,6 +232,7 @@ function App() {
 
         await new Promise(resolve => setTimeout(resolve, 250));
         setWorkOpen(false);
+        setIsTransitioning(false)
     };
 
     const handleSkillsClick = async () => {
@@ -370,7 +372,7 @@ function App() {
             {/* Work section */}
             {/* Work section */}
             <AnimatePresence>
-                {workOpen && (
+                {workOpen &&  (
                     <motion.div
                         ref={workSectionRef}
                         initial={{opacity: 0}}
@@ -379,7 +381,8 @@ function App() {
                         transition={{duration: 0.5}}
                         className="w-full px-6 min-h-screen flex flex-col justify-center items-center"
                     >
-                        <Header colorScheme={colorScheme} workOpen={workOpen} skillsOpen={skillsOpen}/>
+                        {!isTransitioning &&   <Header colorScheme={colorScheme} workOpen={workOpen} skillsOpen={skillsOpen}/>}
+
                     <div className="w-full space-y-2 justify-center items-center lg:space-y-0 lg:space-x-4 flex flex-col lg:flex-row relative">
                             <AnimatePresence mode="popLayout">
                                 <motion.div
