@@ -21,10 +21,10 @@ const ThreeCircles = ({ filledCount = 0 }) => {
 const SkillRow = ({ title, filledCount, index }) => {
     return (
         <motion.div
-            initial={{ y: 0, opacity: 0 }}
+            initial={{ y: 0, opacity: 0.7 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 0, opacity: 0 }}
-            transition={{ delay: index * 0.07 }}
+           transition={{ duration: 0.01 }}
             className="flex justify-between items-center w-full"
         >
             <div className="text-center text-black sm:text-[16px] md:text-xl font-medium font-['Neue Haas Grotesk Display Pro']">

@@ -1,10 +1,10 @@
-import { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import arrow from '/src/assets/arrow_14.svg';
 import linkArrow from '/src/assets/link-arrow-test.svg';
 import { motion, AnimatePresence, useScroll, useMotionValueEvent, animate } from 'framer-motion';
 import SkillsTab from "./SkillsTab2.jsx";
 import { colorSchemes } from './colorSchemes';
-import WorksEntry, { WorksEntryEdie } from "./WorksEntry.jsx";
+import WorksEntry, {WorksEntryEdie, WorksEntryNew, WorksEntryHaus, WorksEntryUnion, WorksEntryUnion2, WorksEntryLapres} from "./WorksEntry.jsx";
 import navArrow from '/src/assets/small-arrow.svg'
 
 const NavArrow = ({ isVisible, onClick }) => {
@@ -35,9 +35,6 @@ const NavArrow = ({ isVisible, onClick }) => {
 
 const Header = ({workOpen, skillsOpen, isTransitioning, setIsTransitioning,setIsScrolling, isScrolling }) => {
 
-
-
-
     const handleScrollToTop = () => {
         window.scrollTo({
             top: 0,
@@ -54,29 +51,25 @@ const Header = ({workOpen, skillsOpen, isTransitioning, setIsTransitioning,setIs
     };
 
     return (
-
-
         <div
             className={`flex justify-between w-screen font-bold ${isScrolling ? "opacity-0" : ""} px-6 fixed top-4 z-50 font-['Neue Haas Grotesk Display Pro'] text-[18px] md:text-[24px] transition duration-0`}>
             <span className="text  "> DANIEL CROWLEY</span>
 
-                <motion.div
-
-                    className={`fixed top-4 left-1/2 m-0 p-0 transform -translate-x-1/2 cursor-pointer ${isScrolling ? 'opacity-0' : 'opacity-100'}`}
-                    onClick={handleArrowClick}
-                >
-                    <img
-                        src={navArrow}
-                        alt="navig  ation arrow"
-                        className="w-8 h-8 m-0 p-0 rotate-180"
-                    />
-                </motion.div>
+            <motion.div
+                className={`fixed top-4 left-1/2 m-0 p-0 transform -translate-x-1/2 cursor-pointer ${isScrolling ? 'opacity-0' : 'opacity-100'}`}
+                onClick={handleArrowClick}
+            >
+                <img
+                    src={navArrow}
+                    alt="navig  ation arrow"
+                    className="w-8 h-8 m-0 p-0 rotate-180"
+                />
+            </motion.div>
 
             <span className="text "> CV</span>
         </div>
     )
 }
-
 
 const WorkInfoTitle = ({scrollPosition, isVisible, title, url}) => {
     const [isHovered, setIsHovered] = useState(false);
@@ -127,8 +120,16 @@ function App() {
     const { scrollY } = useScroll();
     const [isTransitioning, setIsTransitioning] = useState(false);
     const [currentWorkIndex, setCurrentWorkIndex] = useState(0);
-    const [direction, setDirection] =
-        useState('');
+    const [direction, setDirection] = useState('');
+    const [nextWorkIndex, setNextWorkIndex] = useState(null);
+
+    // Use useEffect to handle index change after direction is set
+    React.useEffect(() => {
+        if (nextWorkIndex !== null) {
+            setCurrentWorkIndex(nextWorkIndex);
+            setNextWorkIndex(null);
+        }
+    }, [nextWorkIndex]);
     const [isScrolling, setIsScrolling] = useState(false);
 
     const scrollTo = async (target) => {
@@ -139,7 +140,6 @@ function App() {
             onUpdate: latest => window.scrollTo(0, latest)
         })
     }
-
 
     const works = [
         {
@@ -153,17 +153,51 @@ function App() {
             component: WorksEntryEdie,
             title: "ARTIST PORTFOLIO: EDIE XU",
             url: "https://statuesque-mochi-dbb890.netlify.app/"
+        },
+        {
+            id: 3,
+            component: WorksEntryNew,
+            title: "ARCHIVE VIEW-JXU",
+            url: "https://ABC-mochi-dbb890.netlify.app/"
+        },
+        {
+            id: 4,
+            component: WorksEntryHaus,
+            title: "HAUS PROTOTYPE",
+            url: "https://ABC-mochi-dbb890.netlify.app/"
+        },
+        // {
+        //     id: 5,
+        //     component: WorksEntryUnion,
+        //     title: "HAUS PROTOTYPE",
+        //     url: "https://ABC-mochi-dbb890.netlify.app/"
+        // },
+        {
+            id: 5,
+            component: WorksEntryUnion2,
+            title: "HAUS PROTOTYPE",
+            url: "https://ABC-mochi-dbb890.netlify.app/"
+        },
+        {
+            id: 6,
+            component: WorksEntryLapres,
+            title: "L'APRES COFFEE JOURNAL",
+            url: "https://ABC-mochi-dbb890.netlify.app/"
         }
     ];
 
-// Add function to handle navigation
-    const handleWorkNav = () => {
-        if (currentWorkIndex === 0) {
-            setDirection('right'); // Going from 1st to 2nd
-            setCurrentWorkIndex(1);
-        } else {
-            setDirection('left'); // Going from 2nd to 1st
-            setCurrentWorkIndex(0);
+    // Navigation functions for bidirectional movement
+    const handleWorkNavRight = () => {
+        if (currentWorkIndex < works.length - 1) {
+            setDirection('right');
+            setNextWorkIndex(currentWorkIndex + 1);
+        }
+    };
+
+    const handleWorkNavLeft = () => {
+        if (currentWorkIndex > 0) {
+            setDirection('left');
+            setNextWorkIndex(currentWorkIndex - 1);
         }
     };
 
@@ -183,11 +217,7 @@ function App() {
         }
     });
 
-
-
-
     const workSectionRef = useRef(null);
-
     const skillsSectionRef = useRef(null);
 
     const glitchEffect =  async () => {
@@ -195,7 +225,6 @@ function App() {
         // document.body.classList.add('glitch-active');
         await new Promise(resolve => setTimeout(resolve, window.safari ? 400 : 220));
         setColorScheme('default');
-
     }
 
     const handleWorkClick = async () => {
@@ -207,7 +236,6 @@ function App() {
 
         await new Promise(resolve => setTimeout(resolve, 122)); // Wait for render
 
-
         const element = workSectionRef.current;
         if (element) {
             await animate(window.scrollY, element.offsetTop, {
@@ -216,12 +244,9 @@ function App() {
                 ease: "easeOut",
                 onUpdate: latest => window.scrollTo(0, latest)
             });
-
-
         }
         setIsTransitioning(false);
     }
-
 
     const handleWorkClose = async () => {
         // Start transition back to default colors
@@ -253,10 +278,7 @@ function App() {
                 onUpdate: latest => window.scrollTo(0, latest)
             });
 
-
-
-        setIsTransitioning(false);
-
+            setIsTransitioning(false);
 
             // Adding a delay before allowing scroll-to-top to work
             await new Promise(resolve => setTimeout(resolve, 800));
@@ -275,6 +297,67 @@ function App() {
         setIsTransitioning(false);
     };
 
+    // Keyboard navigation
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            // Prevent navigation if currently transitioning or scrolling
+            if (isTransitioning || isScrolling) return;
+
+            // Prevent navigation if user is typing in an input
+            if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') return;
+
+            const key = event.key.toLowerCase();
+
+            switch (key) {
+                case 'arrowup':
+                case 'w':
+                    event.preventDefault();
+                    // Go to home/about section
+                    if (workOpen) {
+                        handleWorkClose();
+                    } else if (skillsOpen) {
+                        handleSkillsClose();
+                    }
+                    break;
+
+                case 'arrowdown':
+                case 's':
+                    event.preventDefault();
+                    // Go to work section if on home
+                    if (!workOpen && !skillsOpen) {
+                        handleWorkClick();
+                    }
+                    break;
+
+                case 'arrowleft':
+                case 'a':
+                    event.preventDefault();
+                    // Navigate left in work section
+                    if (workOpen && !isTransitioning) {
+                        handleWorkNavLeft();
+                    }
+                    break;
+
+                case 'arrowright':
+                case 'd':
+                    event.preventDefault();
+                    // Navigate right in work section
+                    if (workOpen && !isTransitioning) {
+                        handleWorkNavRight();
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [workOpen, skillsOpen, isTransitioning, isScrolling, currentWorkIndex, works.length]);
 
     return(
         <motion.div
@@ -319,17 +402,6 @@ function App() {
                         </div>
                     </div>
 
-                    {/*<motion.img*/}
-                    {/*    src={arrow}*/}
-                    {/*    animate={{*/}
-                    {/*        filter: colorScheme === 'studio'*/}
-                    {/*            ? 'invert(17%) sepia(96%) saturate(7471%) hue-rotate(295deg) brightness(100%) contrast(105%)'*/}
-                    {/*            : 'none'*/}
-                    {/*    }}*/}
-                    {/*    alt="arrow"*/}
-                    {/*    className="pb-12"*/}
-                    {/*/>*/}
-
                     <div className="pb-12">
                         <svg
                             width="16"
@@ -345,7 +417,6 @@ function App() {
                             />
                         </svg>
                     </div>
-
 
                     {/* Button with Flashing Text Effect */}
                     <motion.button
@@ -394,11 +465,8 @@ function App() {
                         CONTACT
                     </motion.button>
                 </motion.div>
-
-
             </div>
 
-            {/* Work section */}
             {/* Work section */}
             <AnimatePresence>
                 {workOpen && (
@@ -408,18 +476,18 @@ function App() {
                         animate={{opacity: 1, y: 0}}
                         exit={{opacity: 0, y: 20}}
                         transition={{duration: 0.5}}
-                        className="w-full px-6 min-h-screen flex flex-col justify-center items-center"
+                        className="w-full px-16 md:px-6 min-h-screen bg-grey flex flex-col justify-center items-center"
                     >
-                    {!isTransitioning &&   <Header
-                        workOpen={workOpen}
-                        skillsOpen={skillsOpen}
-                        isTransitioning={isTransitioning}
-                        setIsTransitioning={setIsTransitioning}
-                        setIsScrolling={setIsScrolling}
-                        isScrolling={isScrolling}
-                    />}
+                        {!isTransitioning &&   <Header
+                            workOpen={workOpen}
+                            skillsOpen={skillsOpen}
+                            isTransitioning={isTransitioning}
+                            setIsTransitioning={setIsTransitioning}
+                            setIsScrolling={setIsScrolling}
+                            isScrolling={isScrolling}
+                        />}
 
-                    <div className="w-full space-y-2 justify-center items-center lg:space-y-0 lg:space-x-4 flex flex-col lg:flex-row relative">
+                        <div className="w-full space-y-2 justify-center  items-center lg:space-y-0 lg:space-x-4 flex flex-col lg:flex-row relative">
                             <AnimatePresence mode="popLayout">
                                 <motion.div
                                     key={currentWorkIndex}
@@ -433,7 +501,7 @@ function App() {
                                     animate={{ opacity: 1, x: 0 }}
                                     exit={{
                                         opacity: 0,
-                                        x: direction === 'right' ? 1200 : -1200
+                                        x: direction === 'right' ? -1200 : 1200
                                     }}
                                     transition={{duration: 0.5, ease: "easeInOut"}}
                                 >
@@ -444,17 +512,45 @@ function App() {
                                 </motion.div>
                             </AnimatePresence>
 
-                            {/* Nav arrow */}
-                            <div
-                                className={`absolute ${currentWorkIndex === 0 ? 'right-[-12px] left-auto' : 'left-[-28px] right-auto'}    md:bottom-auto md:top-1/2  -translate-y-1/2 cursor-pointer`}
-                                onClick={handleWorkNav}
-                            >
-                                <img
-                                    className={`w-10 h-8 m-0 p-0 ${currentWorkIndex === 0 ? '-rotate-90' : 'rotate-90'}`}
-                                    src={navArrow}
-                                    alt="nav arrow"
-                                />
-                            </div>
+                            {/* Left Nav Arrow */}
+                            {currentWorkIndex > 0 && (
+                                <div
+                                    className="absolute left-[-50px] md:left-[-28px] md:bottom-auto md:top-1/2 -translate-y-1/2 cursor-pointer"
+                                    onClick={handleWorkNavLeft}
+                                >
+                                    <img
+                                        className="w-10 h-8 m-0 p-0 rotate-90"
+                                        src={navArrow}
+                                        alt="nav arrow left"
+                                    />
+                                </div>
+                            )}
+
+                            {/* Right Nav Arrow */}
+                            {currentWorkIndex < works.length - 1 && (
+                                <div
+                                    className="absolute right-[-50px] md:right-[-12px] md:bottom-auto md:top-1/2 -translate-y-1/2 cursor-pointer"
+                                    onClick={handleWorkNavRight}
+                                >
+                                    <img
+                                        className="w-10 h-8 m-0 p-0 -rotate-90"
+                                        src={navArrow}
+                                        alt="nav arrow right"
+                                    />
+                                </div>
+                            )}
+
+                            {/* Work indicator dots */}
+                            {/*<div className="absolute bottom-[-40px] left-1/2 transform -translate-x-1/2 flex space-x-2">*/}
+                            {/*    {works.map((_, index) => (*/}
+                            {/*        <div*/}
+                            {/*            key={index}*/}
+                            {/*            className={`w-2 h-2 rounded-full transition-colors duration-300 ${*/}
+                            {/*                index === currentWorkIndex ? 'bg-current' : 'bg-current opacity-30'*/}
+                            {/*            }`}*/}
+                            {/*        />*/}
+                            {/*    ))}*/}
+                            {/*</div>*/}
                         </div>
                     </motion.div>
                 )}
