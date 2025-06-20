@@ -4,8 +4,11 @@ import linkArrow from '/src/assets/link-arrow-test.svg';
 import { motion, AnimatePresence, useScroll, useMotionValueEvent, animate } from 'framer-motion';
 import SkillsTab from "./SkillsTab2.jsx";
 import { colorSchemes } from './colorSchemes';
-import WorksEntry, {WorksEntryEdie, WorksEntryNew, WorksEntryHaus, WorksEntryUnion, WorksEntryUnion2, WorksEntryLapres} from "./WorksEntry.jsx";
+import WorksEntry, {WorksEntryEdie, WorksEntryNew, WorksEntryHaus, WorksEntryUnion, WorksEntryLapres, WorksEntryLapres2} from "./WorksEntry.jsx";
+import {WorksEntryUnion2} from "./WorksEntryUnion2.jsx";
+import {WorksEntryHausWithCarousel} from "./WorksEntryWtihCarousel.jsx";
 import navArrow from '/src/assets/small-arrow.svg'
+import {WorksEntryHausScrollable, WorksEntryHausWithScrollableWindow} from "./WorksEntryWithScrollable.jsx";
 
 const NavArrow = ({ isVisible, onClick }) => {
 
@@ -123,6 +126,9 @@ function App() {
     const [direction, setDirection] = useState('');
     const [nextWorkIndex, setNextWorkIndex] = useState(null);
 
+    const [isMediaWindowOpen, setIsMediaWindowOpen] = useState(false);
+
+
     // Use useEffect to handle index change after direction is set
     React.useEffect(() => {
         if (nextWorkIndex !== null) {
@@ -156,7 +162,7 @@ function App() {
         },
         {
             id: 3,
-            component: WorksEntryNew,
+            component: WorksEntryHausWithCarousel,
             title: "ARCHIVE VIEW-JXU",
             url: "https://ABC-mochi-dbb890.netlify.app/"
         },
@@ -166,24 +172,37 @@ function App() {
             title: "HAUS PROTOTYPE",
             url: "https://ABC-mochi-dbb890.netlify.app/"
         },
-        // {
-        //     id: 5,
-        //     component: WorksEntryUnion,
-        //     title: "HAUS PROTOTYPE",
-        //     url: "https://ABC-mochi-dbb890.netlify.app/"
-        // },
         {
             id: 5,
-            component: WorksEntryUnion2,
+            component: WorksEntryUnion,
             title: "HAUS PROTOTYPE",
             url: "https://ABC-mochi-dbb890.netlify.app/"
         },
         {
             id: 6,
+            component: WorksEntryUnion2,
+            title: "HAUS PROTOTYPE",
+            url: "https://ABC-mochi-dbb890.netlify.app/"
+        },
+        {
+            id: 7,
             component: WorksEntryLapres,
             title: "L'APRES COFFEE JOURNAL",
             url: "https://ABC-mochi-dbb890.netlify.app/"
+        },
+        {
+            id: 8,
+            component: WorksEntryLapres2,
+            title: "L'APRES COFFEE JOURNAL",
+            url: "https://ABC-mochi-dbb890.netlify.app/"
+        },
+        {
+            id: 9,
+            component: WorksEntryHausScrollable,
+            title: "ARCHIVE VIEW-JXU",
+            url: "https://ABC-mochi-dbb890.netlify.app/"
         }
+
     ];
 
     // Navigation functions for bidirectional movement
@@ -300,8 +319,8 @@ function App() {
     // Keyboard navigation
     useEffect(() => {
         const handleKeyDown = (event) => {
-            // Prevent navigation if currently transitioning or scrolling
-            if (isTransitioning || isScrolling) return;
+            // Prevent navigation if currently transitioning, scrolling, OR if media window is open
+            if (isTransitioning || isScrolling || isMediaWindowOpen) return;
 
             // Prevent navigation if user is typing in an input
             if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') return;
@@ -357,7 +376,7 @@ function App() {
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
         };
-    }, [workOpen, skillsOpen, isTransitioning, isScrolling, currentWorkIndex, works.length]);
+    }, [workOpen, skillsOpen, isTransitioning, isScrolling, isMediaWindowOpen, currentWorkIndex, works.length]);
 
     return(
         <motion.div
@@ -386,10 +405,10 @@ function App() {
                     }}
                     transition={{duration: 0.8}}
                 >
-                    <div className="pb-4   opacity-0 pt-32 md:pt-40 text-center text-[36px] md:text-[66px] font-medium">
+                    <div className="pb-4   opacity-0 pt-32 md:pt-[vh] text-center text-[36px] bg-green-300     font-medium">
                         ABOUT
                     </div>
-                    <div className="w-screen pb-4 justify-center items-center gap-2.5 inline-flex">
+                    <div className="w-screen pb-4 justify-center items-center  gap-2.5 inline-flex">
                         <div
                             className="text-center w-2/3 text-[18px] leading-5 md:leading-7 md:text-[24px] lg:max-w-screen-md lg:leading-9 lg:text-[32px] space-y-2 font-medium">
                             DANIEL CROWLEY IS AN NYC BASED PRODUCT DESIGNER
