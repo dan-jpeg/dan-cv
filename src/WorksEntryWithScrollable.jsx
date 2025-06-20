@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import ScrollableMediaWindow from './ScrollableSubwindow.jsx'; // Import the new component
+import ScrollableMediaWindow from './ScrollableSubwindow.jsx';
 
-// Example: Modified WorksEntryHaus with scrollable media window
+// Example media items
 const hausMediaItems = [
     {
         src: "https://firebasestorage.googleapis.com/v0/b/common-base-d538e.firebasestorage.app/o/haus-closeup.PNG?alt=media&token=d337d182-d580-4cc4-be96-347e4b9f1ef8",
@@ -18,11 +18,6 @@ const hausMediaItems = [
         src: "https://firebasestorage.googleapis.com/v0/b/common-base-d538e.firebasestorage.app/o/haus-5.PNG?alt=media&token=8d17e857-b591-437b-ba5a-c6fc2e0118b4",
         className: "max-w-[400px]",
         alt: "Haus interface 5"
-    },
-    {
-        src: "https://edie-xu-portfolio.s3.us-east-2.amazonaws.com/videos/example-video.mp4", // Example video
-        className: "max-w-[700px]",
-        alt: "Haus demo video"
     }
 ];
 
@@ -40,10 +35,8 @@ const useMediaPreloader = (mediaItems) => {
             const mediaPromises = mediaItems.map((mediaItem) => {
                 return new Promise((resolve, reject) => {
                     if (mediaItem.src.includes('.mp4') || mediaItem.src.includes('.webm')) {
-                        // For videos, just resolve immediately since preloading video can be heavy
                         resolve();
                     } else {
-                        // For images, preload as usual
                         const img = new Image();
                         img.onload = resolve;
                         img.onerror = reject;
@@ -82,36 +75,14 @@ const videoTransitions = {
     }
 };
 
-
-export const WorksEntryHausScrollable = () => {
-    return (
-        <WorksEntryHausWithScrollableWindow
-            onMediaWindowChange={(isOpen) => {
-                // You'll need to pass this callback from App.js
-                console.log('Media window state changed:', isOpen);
-            }}
-        />
-    );
-};
-
-export const WorksEntryHausWithScrollableWindow = ({ onMediaWindowChange }) => {
+// Vertical scrolling version (extends height)
+export const WorksEntryVerticalScroll = ({ onMediaWindowChange }) => {
     const [showMediaWindow, setShowMediaWindow] = useState(false);
     const mediaLoaded = useMediaPreloader(hausMediaItems);
 
-    // Notify parent when media window state changes
     useEffect(() => {
         onMediaWindowChange?.(showMediaWindow);
     }, [showMediaWindow, onMediaWindowChange]);
-
-    const handleOpenWindow = () => {
-        if (mediaLoaded) {
-            setShowMediaWindow(true);
-        }
-    };
-
-    const handleCloseWindow = () => {
-        setShowMediaWindow(false);
-    };
 
     return (
         <>
@@ -125,19 +96,19 @@ export const WorksEntryHausWithScrollableWindow = ({ onMediaWindowChange }) => {
                     loop
                     playsInline
                     preload="auto"
-                    onClick={handleOpenWindow}
+                    onClick={() => mediaLoaded && setShowMediaWindow(true)}
                 >
                     <source src="https://firebasestorage.googleapis.com/v0/b/common-base-d538e.firebasestorage.app/o/Sequence%2002.mp4?alt=media&token=83f023f8-b05a-4eb1-8293-8c961668a68d" type="video/mp4"/>
                 </motion.video>
             </div>
 
-            {/* Scrollable Media Window */}
             <AnimatePresence>
                 {showMediaWindow && (
                     <ScrollableMediaWindow
                         mediaItems={hausMediaItems}
-                        onClose={handleCloseWindow}
-                        columns={2} // 1 or 2 columns
+                        onClose={() => setShowMediaWindow(false)}
+                        variant="vertical"
+                        columns={2}
                     />
                 )}
             </AnimatePresence>
@@ -145,55 +116,96 @@ export const WorksEntryHausWithScrollableWindow = ({ onMediaWindowChange }) => {
     );
 };
 
-// Factory function for easy integration
-export const createWorksEntryWithScrollableWindow = (videoSrc, mediaItems, columns = 1, maxWidth = "[850px]") => {
-    return ({ onMediaWindowChange }) => {
-        const [showMediaWindow, setShowMediaWindow] = useState(false);
-        const mediaLoaded = useMediaPreloader(mediaItems);
+export const WorksEntryHausScrollable = () => {
+    return (
+        <WorksEntryHorizontalScroll
+            onMediaWindowChange={(isOpen) => {
+                // You'll need to pass this callback from App.js
+                console.log('Media window state changed:', isOpen);
+            }}
+        />
+    );
+};
 
-        // Notify parent when media window state changes
-        useEffect(() => {
-            onMediaWindowChange?.(showMediaWindow);
-        }, [showMediaWindow, onMediaWindowChange]);
 
-        const handleOpenWindow = () => {
-            if (mediaLoaded) {
-                setShowMediaWindow(true);
-            }
-        };
+// Horizontal scrolling version (extends width)
+export const WorksEntryHorizontalScroll = ({ onMediaWindowChange }) => {
+    const [showMediaWindow, setShowMediaWindow] = useState(false);
+    const mediaLoaded = useMediaPreloader(hausMediaItems);
 
-        const handleCloseWindow = () => {
-            setShowMediaWindow(false);
-        };
+    useEffect(() => {
+        onMediaWindowChange?.(showMediaWindow);
+    }, [showMediaWindow, onMediaWindowChange]);
 
-        return (
-            <>
-                <div className={`w-full mb-0 max-w-${maxWidth} flex justify-center items-center h-screen relative overflow-hidden`}>
-                    <motion.video
-                        key="video"
-                        {...videoTransitions}
-                        className="w-full h-full max-h-[61vh] object-contain cursor-pointer"
-                        autoPlay
-                        muted
-                        loop
-                        playsInline
-                        preload="auto"
-                        onClick={handleOpenWindow}
-                    >
-                        <source src={videoSrc} type="video/mp4"/>
-                    </motion.video>
-                </div>
+    return (
+        <>
+            <div className="w-full mb-0 max-w-[850px] flex justify-center items-center h-screen relative overflow-hidden">
+                <motion.video
+                    key="video"
+                    {...videoTransitions}
+                    className="w-full h-full max-h-[61vh] object-contain cursor-pointer"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="auto"
+                    onClick={() => mediaLoaded && setShowMediaWindow(true)}
+                >
+                    <source src="https://firebasestorage.googleapis.com/v0/b/common-base-d538e.firebasestorage.app/o/Sequence%2002.mp4?alt=media&token=83f023f8-b05a-4eb1-8293-8c961668a68d" type="video/mp4"/>
+                </motion.video>
+            </div>
 
-                <AnimatePresence>
-                    {showMediaWindow && (
-                        <ScrollableMediaWindow
-                            mediaItems={mediaItems}
-                            onClose={handleCloseWindow}
-                            columns={columns}
-                        />
-                    )}
-                </AnimatePresence>
-            </>
-        );
-    };
+            <AnimatePresence>
+                {showMediaWindow && (
+                    <ScrollableMediaWindow
+                        mediaItems={hausMediaItems}
+                        onClose={() => setShowMediaWindow(false)}
+                        variant="horizontal"
+                        columns={1}
+                    />
+                )}
+            </AnimatePresence>
+        </>
+    );
+};
+
+// Original version with both options
+export const WorksEntryHausWithScrollableWindow = ({ onMediaWindowChange, variant = "vertical" }) => {
+    const [showMediaWindow, setShowMediaWindow] = useState(false);
+    const mediaLoaded = useMediaPreloader(hausMediaItems);
+
+    useEffect(() => {
+        onMediaWindowChange?.(showMediaWindow);
+    }, [showMediaWindow, onMediaWindowChange]);
+
+    return (
+        <>
+            <div className="w-full mb-0 max-w-[850px] flex justify-center items-center h-screen relative overflow-hidden">
+                <motion.video
+                    key="video"
+                    {...videoTransitions}
+                    className="w-full h-full max-h-[61vh] object-contain cursor-pointer"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="auto"
+                    onClick={() => mediaLoaded && setShowMediaWindow(true)}
+                >
+                    <source src="https://firebasestorage.googleapis.com/v0/b/common-base-d538e.firebasestorage.app/o/Sequence%2002.mp4?alt=media&token=83f023f8-b05a-4eb1-8293-8c961668a68d" type="video/mp4"/>
+                </motion.video>
+            </div>
+
+            <AnimatePresence>
+                {showMediaWindow && (
+                    <ScrollableMediaWindow
+                        mediaItems={hausMediaItems}
+                        onClose={() => setShowMediaWindow(false)}
+                        variant={variant}
+                        columns={variant === "vertical" ? 2 : 1}
+                    />
+                )}
+            </AnimatePresence>
+        </>
+    );
 };

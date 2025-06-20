@@ -11,7 +11,6 @@ import navArrow from '/src/assets/small-arrow.svg'
 import {WorksEntryHausScrollable, WorksEntryHausWithScrollableWindow} from "./WorksEntryWithScrollable.jsx";
 
 const NavArrow = ({ isVisible, onClick }) => {
-
     const [isScrolling, setScrolling] = useState(false);
 
     return (
@@ -37,26 +36,24 @@ const NavArrow = ({ isVisible, onClick }) => {
 };
 
 const Header = ({workOpen, skillsOpen, isTransitioning, setIsTransitioning,setIsScrolling, isScrolling }) => {
-
     const handleScrollToTop = () => {
         window.scrollTo({
             top: 0,
             behavior: 'smooth'
         });
     };
+
     const handleArrowClick = async () => {
-        // setIsTransitioning(true);
         setIsScrolling(true);
         handleScrollToTop();
         await new Promise(resolve => setTimeout(resolve, 1300));
         setIsScrolling(false);
-        // setIsTransitioning(false);
     };
 
     return (
         <div
             className={`flex justify-between w-screen font-bold ${isScrolling ? "opacity-0" : ""} px-6 fixed top-4 z-50 font-['Neue Haas Grotesk Display Pro'] text-[18px] md:text-[24px] transition duration-0`}>
-            <span className="text  "> DANIEL CROWLEY</span>
+            <span className="text"> DANIEL CROWLEY</span>
 
             <motion.div
                 className={`fixed top-4 left-1/2 m-0 p-0 transform -translate-x-1/2 cursor-pointer ${isScrolling ? 'opacity-0' : 'opacity-100'}`}
@@ -64,12 +61,12 @@ const Header = ({workOpen, skillsOpen, isTransitioning, setIsTransitioning,setIs
             >
                 <img
                     src={navArrow}
-                    alt="navig  ation arrow"
+                    alt="navigation arrow"
                     className="w-8 h-8 m-0 p-0 rotate-180"
                 />
             </motion.div>
 
-            <span className="text "> CV</span>
+            <span className="text"> CV</span>
         </div>
     )
 }
@@ -125,9 +122,11 @@ function App() {
     const [currentWorkIndex, setCurrentWorkIndex] = useState(0);
     const [direction, setDirection] = useState('');
     const [nextWorkIndex, setNextWorkIndex] = useState(null);
-
     const [isMediaWindowOpen, setIsMediaWindowOpen] = useState(false);
 
+    // States for arrow flashing
+    const [leftArrowFlashing, setLeftArrowFlashing] = useState(false);
+    const [rightArrowFlashing, setRightArrowFlashing] = useState(false);
 
     // Use useEffect to handle index change after direction is set
     React.useEffect(() => {
@@ -136,6 +135,7 @@ function App() {
             setNextWorkIndex(null);
         }
     }, [nextWorkIndex]);
+
     const [isScrolling, setIsScrolling] = useState(false);
 
     const scrollTo = async (target) => {
@@ -202,14 +202,21 @@ function App() {
             title: "ARCHIVE VIEW-JXU",
             url: "https://ABC-mochi-dbb890.netlify.app/"
         }
-
     ];
+
+    // Flash effect helper function
+    const flashArrow = async (setFlashState) => {
+        setFlashState(true);
+        await new Promise(resolve => setTimeout(resolve, 150));
+        setFlashState(false);
+    };
 
     // Navigation functions for bidirectional movement
     const handleWorkNavRight = () => {
         if (currentWorkIndex < works.length - 1) {
             setDirection('right');
             setNextWorkIndex(currentWorkIndex + 1);
+            flashArrow(setRightArrowFlashing);
         }
     };
 
@@ -217,6 +224,7 @@ function App() {
         if (currentWorkIndex > 0) {
             setDirection('left');
             setNextWorkIndex(currentWorkIndex - 1);
+            flashArrow(setLeftArrowFlashing);
         }
     };
 
@@ -226,7 +234,6 @@ function App() {
         setScrollPosition(latest);
 
         if (!isTransitioning && latest < 50) {
-
             if (workOpen) {
                 handleWorkClose();
                 setDirection('')
@@ -239,9 +246,8 @@ function App() {
     const workSectionRef = useRef(null);
     const skillsSectionRef = useRef(null);
 
-    const glitchEffect =  async () => {
+    const glitchEffect = async () => {
         setColorScheme('studio');
-        // document.body.classList.add('glitch-active');
         await new Promise(resolve => setTimeout(resolve, window.safari ? 400 : 220));
         setColorScheme('default');
     }
@@ -253,7 +259,7 @@ function App() {
 
         glitchEffect()
 
-        await new Promise(resolve => setTimeout(resolve, 122)); // Wait for render
+        await new Promise(resolve => setTimeout(resolve, 122));
 
         const element = workSectionRef.current;
         if (element) {
@@ -268,7 +274,6 @@ function App() {
     }
 
     const handleWorkClose = async () => {
-        // Start transition back to default colors
         setColorScheme('default');
         setIsTransitioning(true)
 
@@ -298,8 +303,6 @@ function App() {
             });
 
             setIsTransitioning(false);
-
-            // Adding a delay before allowing scroll-to-top to work
             await new Promise(resolve => setTimeout(resolve, 800));
             setIsTransitioning(false);
         }
@@ -307,12 +310,9 @@ function App() {
 
     const handleSkillsClose = async () => {
         setIsTransitioning(true);
-
         scrollTo()
-
         setSkillsOpen(false);
         await new Promise(resolve => setTimeout(resolve, 1200));
-
         setIsTransitioning(false);
     };
 
@@ -331,7 +331,6 @@ function App() {
                 case 'arrowup':
                 case 'w':
                     event.preventDefault();
-                    // Go to home/about section
                     if (workOpen) {
                         handleWorkClose();
                     } else if (skillsOpen) {
@@ -342,7 +341,6 @@ function App() {
                 case 'arrowdown':
                 case 's':
                     event.preventDefault();
-                    // Go to work section if on home
                     if (!workOpen && !skillsOpen) {
                         handleWorkClick();
                     }
@@ -351,7 +349,6 @@ function App() {
                 case 'arrowleft':
                 case 'a':
                     event.preventDefault();
-                    // Navigate left in work section
                     if (workOpen && !isTransitioning) {
                         handleWorkNavLeft();
                     }
@@ -360,7 +357,6 @@ function App() {
                 case 'arrowright':
                 case 'd':
                     event.preventDefault();
-                    // Navigate right in work section
                     if (workOpen && !isTransitioning) {
                         handleWorkNavRight();
                     }
@@ -387,7 +383,6 @@ function App() {
             }}
             transition={{duration: 0.8, ease: "linear"}}
         >
-
             <WorkInfoTitle
                 scrollPosition={scrollPosition}
                 isVisible={shouldShowWorkInfo}
@@ -396,8 +391,7 @@ function App() {
             />
 
             {/* First viewport - About section */}
-            <div
-                className="w-full min-h-screen flex flex-col  items-center font-['Neue Haas Grotesk Display Pro']">
+            <div className="w-full min-h-screen flex flex-col items-center font-['Neue Haas Grotesk Display Pro']">
                 <motion.div
                     className="flex flex-col justify-center items-center gap-[12px]"
                     animate={{
@@ -405,12 +399,11 @@ function App() {
                     }}
                     transition={{duration: 0.8}}
                 >
-                    <div className="pb-4   opacity-0 pt-32 md:pt-[vh] text-center text-[36px] bg-green-300     font-medium">
+                    <div className="pb-4 opacity-0 pt-32 md:pt-[vh] text-center text-[36px] bg-green-300 font-medium">
                         ABOUT
                     </div>
-                    <div className="w-screen pb-4 justify-center items-center  gap-2.5 inline-flex">
-                        <div
-                            className="text-center w-2/3 text-[18px] leading-5 md:leading-7 md:text-[24px] lg:max-w-screen-md lg:leading-9 lg:text-[32px] space-y-2 font-medium">
+                    <div className="w-screen pb-4 justify-center items-center gap-2.5 inline-flex">
+                        <div className="text-center w-2/3 text-[18px] leading-5 md:leading-7 md:text-[24px] lg:max-w-screen-md lg:leading-9 lg:text-[32px] space-y-2 font-medium">
                             DANIEL CROWLEY IS AN NYC BASED PRODUCT DESIGNER
 
                             THAT SPECIALIZES IN CRAFTING
@@ -439,7 +432,7 @@ function App() {
 
                     {/* Button with Flashing Text Effect */}
                     <motion.button
-                        className="px-8 md:px-[37px] py-1.5 md:py-2.5  rounded-[50px] border-[2.5px] justify-center items-center gap-2.5 flex focus:outline-none transition-colors"
+                        className="px-8 md:px-[37px] py-1.5 md:py-2.5 rounded-[50px] border-[2.5px] justify-center items-center gap-2.5 flex focus:outline-none transition-colors"
                         animate={{
                             borderColor: colorSchemes[colorScheme].text,
                             color: colorSchemes[colorScheme].text
@@ -475,7 +468,7 @@ function App() {
                         }}
                         whileHover={{
                             backgroundColor: "black",
-                            color: "white", // Explicitly set the text color on hover
+                            color: "white",
                         }}
                         whileTap={{scale: 0.95}}
                         onClick={() => window.location.href = 'mailto:dancr.wley@gmail.com'}
@@ -497,7 +490,7 @@ function App() {
                         transition={{duration: 0.5}}
                         className="w-full px-16 md:px-6 min-h-screen bg-grey flex flex-col justify-center items-center"
                     >
-                        {!isTransitioning &&   <Header
+                        {!isTransitioning && <Header
                             workOpen={workOpen}
                             skillsOpen={skillsOpen}
                             isTransitioning={isTransitioning}
@@ -506,12 +499,12 @@ function App() {
                             isScrolling={isScrolling}
                         />}
 
-                        <div className="w-full space-y-2 justify-center  items-center lg:space-y-0 lg:space-x-4 flex flex-col lg:flex-row relative">
+                        <div className="w-full space-y-2 justify-center items-center lg:space-y-0 lg:space-x-4 flex flex-col lg:flex-row relative">
                             <AnimatePresence mode="popLayout">
                                 <motion.div
                                     key={currentWorkIndex}
                                     initial={direction === '' ?
-                                        { opacity: 0 } : // Initial load
+                                        { opacity: 0 } :
                                         {
                                             opacity: 0,
                                             x: direction === 'right' ? 1200 : -1200
@@ -531,45 +524,43 @@ function App() {
                                 </motion.div>
                             </AnimatePresence>
 
-                            {/* Left Nav Arrow */}
+                            {/* Left Nav Arrow with Flashing */}
                             {currentWorkIndex > 0 && (
-                                <div
+                                <motion.div
                                     className="absolute left-[-50px] md:left-[-28px] md:bottom-auto md:top-1/2 -translate-y-1/2 cursor-pointer"
                                     onClick={handleWorkNavLeft}
+                                    animate={{
+                                        scale: leftArrowFlashing ? 0.6 : 1,
+                                        opacity: leftArrowFlashing ? 0.1 : 1
+                                    }}
+                                    transition={{ duration: 0.11 }}
                                 >
                                     <img
-                                        className="w-10 h-8 m-0 p-0 rotate-90"
+                                        className={`w-10 h-8 m-0 p-0 rotate-90 transition-all duration-150 ${leftArrowFlashing ? 'brightness-150' : ''}`}
                                         src={navArrow}
                                         alt="nav arrow left"
                                     />
-                                </div>
+                                </motion.div>
                             )}
 
-                            {/* Right Nav Arrow */}
+                            {/* Right Nav Arrow with Flashing */}
                             {currentWorkIndex < works.length - 1 && (
-                                <div
+                                <motion.div
                                     className="absolute right-[-50px] md:right-[-12px] md:bottom-auto md:top-1/2 -translate-y-1/2 cursor-pointer"
                                     onClick={handleWorkNavRight}
+                                    animate={{
+                                        scale: rightArrowFlashing ? 0.6 : 1,
+                                        opacity: rightArrowFlashing ? 0.1 : 1
+                                    }}
+                                    transition={{  duration: 0.11 }}
                                 >
                                     <img
-                                        className="w-10 h-8 m-0 p-0 -rotate-90"
+                                        className={`w-10 h-8 m-0 p-0 -rotate-90 transition-all duration-150 ${rightArrowFlashing ? 'brightness-150' : ''}`}
                                         src={navArrow}
                                         alt="nav arrow right"
                                     />
-                                </div>
+                                </motion.div>
                             )}
-
-                            {/* Work indicator dots */}
-                            {/*<div className="absolute bottom-[-40px] left-1/2 transform -translate-x-1/2 flex space-x-2">*/}
-                            {/*    {works.map((_, index) => (*/}
-                            {/*        <div*/}
-                            {/*            key={index}*/}
-                            {/*            className={`w-2 h-2 rounded-full transition-colors duration-300 ${*/}
-                            {/*                index === currentWorkIndex ? 'bg-current' : 'bg-current opacity-30'*/}
-                            {/*            }`}*/}
-                            {/*        />*/}
-                            {/*    ))}*/}
-                            {/*</div>*/}
                         </div>
                     </motion.div>
                 )}
@@ -585,10 +576,9 @@ function App() {
                         transition={{duration: 0.5}}
                         className="w-full min-h-screen flex flex-col justify-center items-center"
                     >
-                        <Header colorScheme={colorScheme} workOpen={workOpen} skillsOpen={skillsOpen} setIsTransitioning={setIsTransitioning}  setIsScrolling={setIsScrolling}
+                        <Header colorScheme={colorScheme} workOpen={workOpen} skillsOpen={skillsOpen} setIsTransitioning={setIsTransitioning} setIsScrolling={setIsScrolling}
                                 isScrolling={isScrolling}/>
                         <SkillsTab isTransitioning={isTransitioning}/>
-
                     </motion.div>
                 )}
             </AnimatePresence>
